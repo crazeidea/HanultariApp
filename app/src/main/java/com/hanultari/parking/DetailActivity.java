@@ -19,7 +19,8 @@ import java.util.List;
 public class DetailActivity extends AppCompatActivity implements View.OnClickListener {
   ViewGroup layout;
 
-  String seats = "_UUUUUUAAAAARRRR_/"
+  String seats =
+            "_UUUUUUAAAAARRRR_/"
           + "_________________/"
           + "UU__AAAARRRRR__RR/"
           + "UU__UUUAAAAAA__AA/"
@@ -37,8 +38,9 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
           + "_________________/";
 
   List<TextView> seatViewList = new ArrayList<>();
-  int seatSize = 100;
-  int seatGaping = 10;
+  int seatWidth = 70;
+  int seatHeight = 100;
+  int seatGaping = 5;
 
   int STATUS_AVAILABLE = 1;
   int STATUS_BOOKED = 2;
@@ -55,7 +57,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     seats = "/" + seats;
 
     LinearLayout layoutSeat = new LinearLayout(this);
-    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
     layoutSeat.setOrientation(LinearLayout.VERTICAL);
     layoutSeat.setLayoutParams(params);
     layoutSeat.setPadding(8 * seatGaping, 8 * seatGaping, 8 * seatGaping, 8 * seatGaping);
@@ -73,13 +75,13 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
       } else if (seats.charAt(index) == 'U') {
         count++;
         TextView view = new TextView(this);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(seatSize, seatSize);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(seatWidth, seatHeight);
         layoutParams.setMargins(seatGaping, seatGaping, seatGaping, seatGaping);
         view.setLayoutParams(layoutParams);
         view.setPadding(0, 0, 0, 2 * seatGaping);
         view.setId(count);
         view.setGravity(Gravity.CENTER);
-        view.setBackgroundResource(R.drawable.activity_detail_free);
+        view.setBackgroundResource(R.drawable.activity_detail_badge_free);
         view.setTextColor(Color.WHITE);
         view.setTag(STATUS_BOOKED);
         view.setText(count + "");
@@ -90,13 +92,13 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
       } else if (seats.charAt(index) == 'A') {
         count++;
         TextView view = new TextView(this);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(seatSize, seatSize);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(seatWidth, seatHeight);
         layoutParams.setMargins(seatGaping, seatGaping, seatGaping, seatGaping);
         view.setLayoutParams(layoutParams);
         view.setPadding(0, 0, 0, 2 * seatGaping);
         view.setId(count);
         view.setGravity(Gravity.CENTER);
-        view.setBackgroundResource(R.drawable.activity_detail_free);
+        view.setBackgroundResource(R.drawable.activity_detail_badge_free);
         view.setText(count + "");
         view.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 9);
         view.setTextColor(Color.BLACK);
@@ -107,13 +109,13 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
       } else if (seats.charAt(index) == 'R') {
         count++;
         TextView view = new TextView(this);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(seatSize, seatSize);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(seatWidth, seatHeight);
         layoutParams.setMargins(seatGaping, seatGaping, seatGaping, seatGaping);
         view.setLayoutParams(layoutParams);
         view.setPadding(0, 0, 0, 2 * seatGaping);
         view.setId(count);
         view.setGravity(Gravity.CENTER);
-        view.setBackgroundResource(R.drawable.activity_detail_free);
+        view.setBackgroundResource(R.drawable.activity_detail_badge_free);
         view.setText(count + "");
         view.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 9);
         view.setTextColor(Color.WHITE);
@@ -123,7 +125,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         view.setOnClickListener(this);
       } else if (seats.charAt(index) == '_') {
         TextView view = new TextView(this);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(seatSize, seatSize);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(seatWidth, seatHeight);
         layoutParams.setMargins(seatGaping, seatGaping, seatGaping, seatGaping);
         view.setLayoutParams(layoutParams);
         view.setBackgroundColor(Color.TRANSPARENT);
@@ -138,10 +140,10 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     if ((int) view.getTag() == STATUS_AVAILABLE) {
       if (selectedIds.contains(view.getId() + ",")) {
         selectedIds = selectedIds.replace(+view.getId() + ",", "");
-        view.setBackgroundResource(R.drawable.activity_detail_free);
+        view.setBackgroundResource(R.drawable.activity_detail_badge_free);
       } else {
         selectedIds = selectedIds + view.getId() + ",";
-        view.setBackgroundResource(R.drawable.activity_detail_free);
+        view.setBackgroundResource(R.drawable.activity_detail_badge_free);
       }
     } else if ((int) view.getTag() == STATUS_BOOKED) {
       Toast.makeText(this, "Seat " + view.getId() + " is Booked", Toast.LENGTH_SHORT).show();

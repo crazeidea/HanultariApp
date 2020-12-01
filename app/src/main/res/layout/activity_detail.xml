@@ -18,6 +18,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <FrameLayout
+        android:id="@+id/frameLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="150dp"
@@ -29,7 +30,8 @@
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="25dp">
+            android:padding="25dp"
+            android:scrollbars="none">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -48,7 +50,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="10dp"
                         android:layout_marginRight="10dp"
-                        app:srcCompat="@drawable/activity_detail_free" />
+                        app:srcCompat="@drawable/activity_detail_badge_free" />
 
                     <ImageView
                         android:id="@+id/imageView3"
@@ -57,14 +59,14 @@
                         android:layout_marginEnd="10dp"
                         android:layout_marginRight="10dp"
                         android:layout_weight="1"
-                        app:srcCompat="@drawable/activity_detail_free" />
+                        app:srcCompat="@drawable/activity_detail_badge_free" />
 
                     <ImageView
                         android:id="@+id/imageView4"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        app:srcCompat="@drawable/activity_detail_free" />
+                        app:srcCompat="@drawable/activity_detail_badge_free" />
                 </LinearLayout>
 
                 <TextView
@@ -120,108 +122,199 @@
                     android:layout_width="match_parent"
                     android:layout_height="10dp" />
 
-                <ImageView
-                    android:id="@+id/imageView8"
-                    android:layout_width="wrap_content"
-                    android:layout_height="200dp"
-                    tools:srcCompat="@tools:sample/backgrounds/scenic" />
+                <fragment
+                    android:id="@+id/map"
+                    android:name="com.google.android.gms.maps.SupportMapFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp" />
 
                 <Space
                     android:layout_width="match_parent"
                     android:layout_height="10dp" />
 
-                <TableLayout
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
 
-                    <TableRow
+                    <TextView
+                        android:id="@+id/tvDetailFare"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="10dp"
+                        android:fontFamily="@font/roboto_bold"
+                        android:text="기본요금 3,000원"
+                        android:textColor="@color/black"
+                        android:textSize="26sp" />
+
+                    <TextView
+                        android:id="@+id/tvDetailAddedFare"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/roboto_bold"
+                        android:text="추가 요금 1,000원 / 15분"
+                        android:textColor="@color/gray" />
+                </LinearLayout>
+
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="10dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tvDetailOperTimeTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="10dp"
+                        android:fontFamily="@font/roboto_bold"
+                        android:text="운영시간"
+                        android:textColor="@color/gray"
+                        android:textSize="20sp" />
+
+                    <TextView
+                        android:id="@+id/tvDetailOperTimeContent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/roboto_bold"
+                        android:text="추가 요금 1,000원 / 15분"
+                        android:textColor="@color/black"
+                        android:textSize="20sp" />
+                </LinearLayout>
+
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="10dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tvDetailAddrTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="10dp"
+                        android:fontFamily="@font/roboto_bold"
+                        android:text="주소"
+                        android:textColor="@color/black"
+                        android:textSize="20sp" />
+
+                </LinearLayout>
+
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="5dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="67dp"
+                    android:foregroundGravity="center"
+                    android:weightSum="10">
+
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:baselineAligned="false"
+                        android:gravity="center_vertical"
+                        android:orientation="vertical"
+                        android:paddingBottom="10dp">
 
                         <TextView
-                            android:id="@+id/tvDetailOperTimeTitle"
+                            android:id="@+id/tvDetailAddr"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginEnd="20dp"
-                            android:layout_marginRight="20dp"
+                            android:layout_marginRight="10dp"
                             android:fontFamily="@font/roboto_bold"
-                            android:text="기본요금 3,000원"
+                            android:text="광주광역시 북구 금호로 40번길 33"
                             android:textColor="@color/black"
-                            android:textSize="24sp" />
-
-                        <TextView
-                            android:id="@+id/tvDetailOperTimeContent"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="추가 30분당 2,000원"
-                            android:textColor="@color/gray"
                             android:textSize="16sp" />
 
-                    </TableRow>
-
-                    <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <Space
-                            android:layout_width="match_parent"
-                            android:layout_height="10dp" />
-                    </TableRow>
-
-                    <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
                         <TextView
-                            android:id="@+id/tvDetailOperTimeTitle"
+                            android:id="@+id/tvDetailPrevAddr"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginEnd="10dp"
                             android:layout_marginRight="10dp"
                             android:fontFamily="@font/roboto_bold"
-                            android:text="운영시간"
-                            android:textColor="@color/black"
-                            android:textSize="20sp" />
+                            android:text="광주광역시 북구 운암2동 31-13"
+                            android:textColor="@color/gray"
+                            android:textSize="12sp" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="10dp" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tvDetailManagerTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="10dp"
+                        android:fontFamily="@font/roboto_bold"
+                        android:text="관리자"
+                        android:textColor="@color/black"
+                        android:textSize="20sp" />
+
+                </LinearLayout>
+
+
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="5dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:weightSum="4">
+
+                    <LinearLayout
+                        android:layout_width="375dp"
+                        android:layout_height="match_parent"
+                        android:baselineAligned="false"
+                        android:gravity="center_vertical"
+                        android:orientation="vertical"
+                        android:layout_weight="3"
+                        android:paddingBottom="10dp">
 
                         <TextView
-                            android:id="@+id/tvDetailOperTimeContent"
+                            android:id="@+id/tvDetailManagerName"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="월~금 09:00 ~ 18:00"
-                            android:textColor="@color/black"
-                            android:textSize="20sp" />
-                    </TableRow>
-
-                    <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <Space
-                            android:layout_width="match_parent"
-                            android:layout_height="10dp" />
-                    </TableRow>
-
-                    <TableRow
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <TextView
-                            android:id="@+id/tvDetailOperTimeTitle"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="10dp"
                             android:layout_marginRight="10dp"
                             android:fontFamily="@font/roboto_bold"
-                            android:text="주소"
+                            android:text="한국아파트 관리사무소"
                             android:textColor="@color/black"
-                            android:textSize="20sp" />
+                            android:textSize="16sp" />
 
-                    </TableRow>
+                        <TextView
+                            android:id="@+id/tvDetailManagerContact"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="10dp"
+                            android:fontFamily="@font/roboto_bold"
+                            android:text="062-529-1018"
+                            android:textColor="@color/gray"
+                            android:textSize="12sp" />
 
-                </TableLayout>
+                    </LinearLayout>
+
+                </LinearLayout>
+
 
             </LinearLayout>
         </ScrollView>
 
     </FrameLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
