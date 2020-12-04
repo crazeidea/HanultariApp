@@ -15,17 +15,17 @@ import java.util.ArrayList;
 public class ParkingAdapter extends RecyclerView.Adapter<ParkingAdapter.ViewHolder> {
 
     Context context;
-    ArrayList<com.hanultari.parking.ParkingDTO> dtos;
+    ArrayList<ParkingDTO> dtos;
     LayoutInflater inflater;
 
-    public ParkingAdapter(Context context, ArrayList<com.hanultari.parking.ParkingDTO> dtos) {
+    public ParkingAdapter(Context context, ArrayList<ParkingDTO> dtos) {
         this.context = context;
         this.dtos = dtos;
     }
 
-    public void addDto(com.hanultari.parking.ParkingDTO dto) {dtos.add(dto);}
+    public void addDto(ParkingDTO dto) {dtos.add(dto);}
 
-    public com.hanultari.parking.ParkingDTO getItem(int position) {return dtos.get(position);}
+    public ParkingDTO getItem(int position) {return dtos.get(position);}
 
 
     @NonNull
@@ -39,7 +39,7 @@ public class ParkingAdapter extends RecyclerView.Adapter<ParkingAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        com.hanultari.parking.ParkingDTO dto = dtos.get(position);
+        ParkingDTO dto = dtos.get(position);
         holder.setItem(dto);
     }
 
@@ -55,17 +55,9 @@ public class ParkingAdapter extends RecyclerView.Adapter<ParkingAdapter.ViewHold
 
         public ViewHolder(@NonNull View itemView, com.hanultari.parking.ParkingAdapter parkingAdapter) {
             super(itemView);
-            rv_Charge = itemView.findViewById(R.id.rv_Charge);
-            rv_Park = itemView.findViewById(R.id.rv_Park);
-            rv_Distance = itemView.findViewById(R.id.rv_Distance);
-            rv_Img = itemView.findViewById(R.id.rv_Img);
         }
 
-        public void setItem(com.hanultari.parking.ParkingDTO dto) {
-            rv_Charge.setText(dto.getCharge());
-            rv_Park.setText(dto.getPark());
-            rv_Distance.setText(dto.getDistance());
-            rv_Img.setImageResource(dto.getResId());
+        public void setItem(ParkingDTO dto) {
         }
     }
 }

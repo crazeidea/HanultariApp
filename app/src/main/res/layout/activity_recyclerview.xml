@@ -34,22 +34,27 @@
                 android:paddingBottom="8dp">
 
                 <TextView
-                    android:id="@+id/rv_Charge"
+                    android:id="@+id/tvPaid"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="유/무료"
                     android:textSize="20dp" />
 
                 <TextView
-                    android:id="@+id/rv_Park"
+                    android:id="@+id/tvName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
                     android:text="ㅇㅇ 주차장"
-                    android:textSize="30dp" />
+                    android:textSize="24dp" />
 
                 <TextView
-                    android:id="@+id/rv_Distance"
+                    android:id="@+id/tvFare"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="1,000원 / 30분" />
+
+                <TextView
+                    android:id="@+id/tvDistance"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
