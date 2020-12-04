@@ -1,4 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <group>
+        <item
+            android:id="@+id/side_information"
+            android:icon="@mipmap/ic_launcher"
+            android:title="내 정보"/>
+        <item
+            android:id="@+id/side_setting"
+            android:icon="@mipmap/ic_launcher"
+            android:title="설정"/>
+        <item
+            android:id="@+id/side_favoirte"
+            android:icon="@mipmap/ic_launcher"
+            android:title="즐겨찾는 주차장"/>
+        <item
+            android:id="@+id/side_record"
+            android:icon="@drawable/gradient"
+            android:title="주차 기록"/>
+    </group>
 </menu>

@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 
 import android.Manifest;
 import android.content.Context;
@@ -25,6 +26,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.material.navigation.NavigationView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -33,6 +35,8 @@ public class MainActivity extends AppCompatActivity {
   Button btnLocateHere, btnLocateNear;  //Here 내위치 확인, Near 주변주차장 찾기
   SearchView searchView;  //검색바
   MarkerOptions mymarker; //위치표시
+  Fragment fragment1; //내 정보
+  Fragment fragment2; //설정
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +47,8 @@ public class MainActivity extends AppCompatActivity {
     btnLocateNear = findViewById(R.id.btnLocateNear);
     btnLocateHere = findViewById(R.id.btnLocateHere);
 
+    fragment1 = new Fragment();
+    fragment2 = new Fragment();
 
     mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
 
