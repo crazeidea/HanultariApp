@@ -19,7 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:text="○○○ 공영주차장에\n주차되어있어요"
+        android:text="○○○ 공영주차장에 \n 주차되어있어요"
         android:textSize="24dp"
         android:textStyle="bold"
         android:textColor="#FFFFFF"
