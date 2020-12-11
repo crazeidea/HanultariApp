@@ -5,7 +5,11 @@ public class ParkingDTO {
   private float lat, lon;
   private int parked, total, fare, added_fare, duration, duration_interval;
 
-  public ParkingDTO() {};
+  public ParkingDTO(String payment_cash, String name, String distance) {
+    this.payment_cash = payment_cash;
+    this.name = name;
+    this.distance = distance;
+  };
 
   public ParkingDTO(String id, String name, String addr, String prev_addr, String manager, String contact, String oper_mon, String oper_tue, String oper_wed, String oper_thu, String oper_fri, String oper_sat, String oper_sun, String start_time, String end_time, String payment_cash, String payment_card, String payment_machine, String layout, String indoor, String smallcar, String woman, String disabled, String paid, String distance, float lat, float lon, int parked, int total, int fare, int added_fare, int duration, int duration_interval) {
     this.id = id;
