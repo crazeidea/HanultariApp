@@ -1,5 +1,6 @@
 package com.hanultari.parking;
 
+import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,8 @@ import com.hanultari.parking.DTO.ParkingDTO;
 import java.util.ArrayList;
 
 public class ParkingAdapter extends RecyclerView.Adapter<ParkingAdapter.ViewHolder> {
+
+    private Activity activity;
 
     Context context;
     ArrayList<ParkingDTO> dtos;
@@ -57,9 +60,18 @@ public class ParkingAdapter extends RecyclerView.Adapter<ParkingAdapter.ViewHold
 
         public ViewHolder(@NonNull View itemView, com.hanultari.parking.ParkingAdapter parkingAdapter) {
             super(itemView);
+
+            rv_Charge = itemView.findViewById(R.id.tvFare);
+            rv_Park = itemView.findViewById(R.id.tvName);
+            rv_Distance = itemView.findViewById(R.id.tvDistance);
+            rv_Img = itemView.findViewById(R.id.rv_Img);
         }
 
         public void setItem(ParkingDTO dto) {
+            rv_Charge.setText(dto.getPayment_cash());
+            rv_Park.setText(dto.getName());
+            rv_Distance.setText(dto.getDistance());
+            rv_Img.setImageResource(R.drawable.dream01);
         }
     }
 }
