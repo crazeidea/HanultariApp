@@ -10,6 +10,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.hanultari.parking.DTO.ParkingDTO;
+
 import java.util.ArrayList;
 
 public class ParkingAdapter extends RecyclerView.Adapter<ParkingAdapter.ViewHolder> {

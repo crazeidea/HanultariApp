@@ -1,157 +1,119 @@
 package com.hanultari.parking;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SearchView;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
-import android.Manifest;
-import android.content.Context;
-import android.content.pm.PackageManager;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
+import android.graphics.Camera;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapsInitializer;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
+import androidx.annotation.LongDef;
+import androidx.annotation.NonNull;
+import androidx.annotation.UiThread;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 
-public class MainActivity extends AppCompatActivity {
 
-  SupportMapFragment mapFragment;
-  GoogleMap map;
-  Button btnLocateHere, btnLocateNear;  //Here 내위치 확인, Near 주변주차장 찾기
-  SearchView searchView;  //검색바
-  MarkerOptions mymarker; //위치표시
+import com.naver.maps.geometry.LatLng;
+import com.naver.maps.map.CameraAnimation;
+import com.naver.maps.map.CameraPosition;
+import com.naver.maps.map.CameraUpdate;
+import com.naver.maps.map.LocationTrackingMode;
+import com.naver.maps.map.MapFragment;
+import com.naver.maps.map.NaverMap;
+import com.naver.maps.map.OnMapReadyCallback;
+import com.naver.maps.map.UiSettings;
+import com.naver.maps.map.util.FusedLocationSource;
+
+import org.jsoup.nodes.Document;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+
+public class MainActivity extends FragmentActivity implements OnMapReadyCallback {
+  private static final String TAG = "MainActivity";
+
+  /*레이아웃 관련 변수 */
+
+  private ImageButton btnLocateHere;
+
+
+
+  /* 네이버 지도 관련 변수 */
+  private static final int LOCATION_PERMISSION_REQUEST_CODE = 1000;
+  private FusedLocationSource locationSource;
+  private NaverMap naverMap;
+
 
   @Override
-  protected void onCreate(Bundle savedInstanceState) {
+  public void onCreate(Bundle savedInstanceState) {
+
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
 
-    checkDangerousPermissions();
-    btnLocateNear = findViewById(R.id.btnLocateNear);
+    /* 레이아웃 관련 변수 */
     btnLocateHere = findViewById(R.id.btnLocateHere);
 
 
-    mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
 
-    mapFragment.getMapAsync(new OnMapReadyCallback() {
-      @Override
-      public void onMapReady(GoogleMap googleMap) {
-
-        map = googleMap;
-
-        try {
-          map.setMyLocationEnabled(true);
-        } catch (SecurityException e) {
-
-        }
-
-      }
-    });
-    MapsInitializer.initialize(this);
-
-    btnLocateHere.setOnClickListener(new View.OnClickListener() { //내위치 찾기
-      @Override
-      public void onClick(View v) {
-        requestMyLocation();
-      }
-    });
-  }
-
-  private void requestMyLocation() {
-    LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-    try {
-      long minTime = 10000;
-      float minDistance = 0;
-      manager.requestLocationUpdates(
-              LocationManager.GPS_PROVIDER,
-              minTime,
-              minDistance,
-              new LocationListener() {
-                @Override
-                public void onLocationChanged(@NonNull Location location) {
-                  showCurrentLocation(location);
-                }
-              }
-      );
-    }catch (SecurityException e) {
-
-    }
-  }
-
-  private void showCurrentLocation(Location location) {
-    LatLng curPoint = new LatLng(location.getLatitude(), location.getLongitude());
-    String msg = "Latitude : " + curPoint.latitude + "\nLongitude : " + curPoint.longitude;
-    map.animateCamera(CameraUpdateFactory.newLatLngZoom(curPoint, 18));
-
-    //실시간 위,경도 구현하는건 찾아볼게요~
-    //hear 버튼 누르면 내가 설정한 위치로 이동해요
-    Location targetLocation = new Location("");
-    targetLocation.setLatitude(35.2103);
-    targetLocation.setLongitude(126.8628);
-    showMyLocationMarker(targetLocation);
-  }
-
-  private void showMyLocationMarker(Location location) {
-    if (mymarker == null) {
-      mymarker = new MarkerOptions();
-      mymarker.position(new LatLng(location.getLatitude(), location.getLongitude()));
-      map.addMarker(mymarker);
-    }
-  }
-
-  private void checkDangerousPermissions() {
-    String[] permissions = {
-            Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.ACCESS_COARSE_LOCATION
-    };
-
-    int permissionCheck = PackageManager.PERMISSION_GRANTED;
-    for (int i = 0; i < permissions.length; i++) {
-      permissionCheck = ContextCompat.checkSelfPermission(this, permissions[i]);
-      if (permissionCheck == PackageManager.PERMISSION_DENIED) {
-        break;
-      }
+    FragmentManager fm = getSupportFragmentManager();
+    MapFragment mapFragment = (MapFragment) fm.findFragmentById(R.id.map);
+    if (mapFragment == null) {
+      mapFragment = MapFragment.newInstance();
+      fm.beginTransaction().add(R.id.map, mapFragment).commit();
     }
 
-    if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
-      Toast.makeText(this, "권한 있음", Toast.LENGTH_LONG).show();
-    } else {
-      Toast.makeText(this, "권한 없음", Toast.LENGTH_LONG).show();
+    mapFragment.getMapAsync(this);
 
-      if (ActivityCompat.shouldShowRequestPermissionRationale(this, permissions[0])) {
-        Toast.makeText(this, "권한 설명 필요함.", Toast.LENGTH_LONG).show();
-      } else {
-        ActivityCompat.requestPermissions(this, permissions, 1);
-      }
-    }
-  }
+    locationSource = new FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE);
+
+  } // onCreate()
+
 
   @Override
-  public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-    if (requestCode == 1) {
-      for (int i = 0; i < permissions.length; i++) {
-        if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
-          Toast.makeText(this, permissions[i] + " 권한이 승인됨.", Toast.LENGTH_LONG).show();
-        } else {
-          Toast.makeText(this, permissions[i] + " 권한이 승인되지 않음.", Toast.LENGTH_LONG).show();
-        }
+  public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    if (locationSource.onRequestPermissionsResult(requestCode, permissions, grantResults)) {
+      if (!locationSource.isActivated()) { // 권한 거부됨
+        naverMap.setLocationTrackingMode(LocationTrackingMode.None);
       }
+      return;
     }
+    super.onRequestPermissionsResult(requestCode, permissions, grantResults);
   }
 
-}
 
+  @UiThread
+  @Override
+  public void onMapReady(@NonNull NaverMap naverMap) {
+    this.naverMap = naverMap;
+
+    naverMap.setLocationSource(locationSource);
+    naverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
+    naverMap.setMinZoom(12);
+    naverMap.setMaxZoom(16);
+
+
+
+    btnLocateHere.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        CameraPosition currentLocation = new CameraPosition(new LatLng(locationSource.getLastLocation().getLatitude(), locationSource.getLastLocation().getLongitude()), 16);
+        CameraUpdate currentLocationCamera = CameraUpdate.toCameraPosition(currentLocation).animate(CameraAnimation.Fly);
+        naverMap.moveCamera(currentLocationCamera);
+      }
+    }); //btnLocateHere.onclick
+  } // onMapReady()
+
+
+}

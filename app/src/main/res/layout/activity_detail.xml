@@ -66,7 +66,7 @@
                 android:id="@+id/tvDetailTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/roboto_bold"
+                android:fontFamily="@font/robotobold"
                 android:text="농성동 공영주차장"
                 android:textColor="@color/black"
                 android:textSize="40sp"
@@ -76,7 +76,7 @@
                 android:id="@+id/tvDetailStatus"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/roboto_bold"
+                android:fontFamily="@font/robotobold"
                 android:text="현재 3자리 남아있어요."
                 android:textColor="@color/black"
                 android:textSize="30sp" />
@@ -89,7 +89,7 @@
                 android:id="@+id/tvDetailStatusTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/roboto_bold"
+                android:fontFamily="@font/robotobold"
                 android:text="주차장 현황"
                 android:textColor="@color/black"
                 android:textSize="24sp" />
@@ -106,7 +106,7 @@
                 android:id="@+id/tvDetailStatus2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/roboto_bold"
+                android:fontFamily="@font/robotobold"
                 android:text="주차장 정보"
                 android:textColor="@color/black"
                 android:textSize="24sp" />
@@ -135,7 +135,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="10dp"
-                    android:fontFamily="@font/roboto_bold"
+                    android:fontFamily="@font/robotobold"
                     android:text="기본요금 3,000원"
                     android:textColor="@color/black"
                     android:textSize="26sp" />
@@ -144,7 +144,7 @@
                     android:id="@+id/tvDetailAddedFare"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/roboto_bold"
+                    android:fontFamily="@font/robotobold"
                     android:text="추가 요금 1,000원 / 15분"
                     android:textColor="@color/gray" />
             </LinearLayout>
@@ -163,7 +163,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="10dp"
-                    android:fontFamily="@font/roboto_bold"
+                    android:fontFamily="@font/robotobold"
                     android:text="운영시간"
                     android:textColor="@color/gray"
                     android:textSize="20sp" />
@@ -172,7 +172,7 @@
                     android:id="@+id/tvDetailOperTimeContent"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/roboto_bold"
+                    android:fontFamily="@font/robotobold"
                     android:text="추가 요금 1,000원 / 15분"
                     android:textColor="@color/black"
                     android:textSize="20sp" />
@@ -192,7 +192,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="10dp"
-                    android:fontFamily="@font/roboto_bold"
+                    android:fontFamily="@font/robotobold"
                     android:text="주소"
                     android:textColor="@color/black"
                     android:textSize="20sp" />
@@ -206,11 +206,10 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:foregroundGravity="center"
-                android:weightSum="10">
+                android:foregroundGravity="center">
 
                 <LinearLayout
-                    android:layout_width="309dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="4"
                     android:baselineAligned="false"
@@ -223,7 +222,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="10dp"
-                        android:fontFamily="@font/roboto_bold"
+                        android:fontFamily="@font/robotobold"
                         android:text="광주광역시 북구 금호로 40번길 33"
                         android:textColor="@color/black"
                         android:textSize="16sp" />
@@ -233,21 +232,32 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="10dp"
-                        android:fontFamily="@font/roboto_bold"
+                        android:fontFamily="@font/robotobold"
                         android:text="광주광역시 북구 운암2동 31-13"
                         android:textColor="@color/gray"
                         android:textSize="12sp" />
 
                 </LinearLayout>
 
-                <ImageButton
-                    android:id="@+id/button3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_weight="4"
-                    android:background="@drawable/button_square"
-                    android:src="@drawable/ic_share"
-                    app:cornerRadius="40dp" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnShare"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:backgroundTint="@color/primary"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    app:cornerRadius="40dp"
+                    app:icon="@drawable/ic_share"
+                    app:iconGravity="textStart"
+                    app:iconPadding="@dimen/cardview_default_radius"
+                    app:iconSize="30dp"
+                    app:iconTint="@android:color/white"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:rippleColor="@color/secondary"
+                    app:strokeColor="@color/primary"
+                    app:strokeWidth="3dp" />
 
             </LinearLayout>
 
@@ -265,10 +275,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="10dp"
-                    android:fontFamily="@font/roboto_bold"
+                    android:fontFamily="@font/robotobold"
                     android:text="관리자"
                     android:textColor="@color/black"
                     android:textSize="20sp" />
+
 
             </LinearLayout>
 
@@ -296,7 +307,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="10dp"
-                        android:fontFamily="@font/roboto_bold"
+                        android:fontFamily="@font/robotobold"
                         android:text="한국아파트 관리사무소"
                         android:textColor="@color/black"
                         android:textSize="16sp" />
@@ -306,21 +317,16 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="10dp"
-                        android:fontFamily="@font/roboto_bold"
+                        android:fontFamily="@font/robotobold"
                         android:text="062-529-1018"
                         android:textColor="@color/gray"
                         android:textSize="12sp" />
 
-                </LinearLayout>
+                    <Space
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp" />
 
-                <ImageButton
-                    android:id="@+id/button4"
-                    android:layout_width="56dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="4"
-                    android:background="@drawable/button_square"
-                    android:src="@drawable/ic_phone"
-                    app:cornerRadius="40dp" />
+                </LinearLayout>
 
             </LinearLayout>
 
@@ -328,10 +334,11 @@
         </LinearLayout>
     </ScrollView>
 
+
     <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="45dp"
+        android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
