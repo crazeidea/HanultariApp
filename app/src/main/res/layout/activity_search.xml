@@ -16,5 +16,9 @@
         android:layout_marginRight="30dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:iconifiedByDefault="false"
+        android:layoutDirection="rtl"
+        android:background="#ffffff"
+        android:elevation="10dp"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

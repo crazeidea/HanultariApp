@@ -88,6 +88,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/divWoman"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/setting_items_margin_bottom"
@@ -126,6 +127,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/divDisabled"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/setting_items_margin_bottom"
@@ -164,6 +166,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/divSmall"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/setting_items_margin_bottom"

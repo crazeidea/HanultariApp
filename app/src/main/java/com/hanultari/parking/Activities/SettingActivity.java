@@ -1,5 +1,6 @@
 package com.hanultari.parking.Activities;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -15,25 +16,16 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.hanultari.parking.MainActivity;
 import com.hanultari.parking.R;
 
 public class SettingActivity extends AppCompatActivity {
   private static final String TAG = "SettingActivity";
 
-  @Override
-  protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
 
-    if (requestCode == 100) {
-      recreate();
-    } else {
-      super.onActivityResult(requestCode, resultCode, data);
-    }
-  }
-
+  @SuppressLint("MissingSuperCall")
   @Override
   protected void onNewIntent(Intent intent) {
-    super.onNewIntent(intent);
+    recreate();
   }
 
   @Override
@@ -94,7 +86,32 @@ public class SettingActivity extends AppCompatActivity {
       @Override
       public void onClick(View v) {
         Intent intent = new Intent(SettingActivity.this, AppChoiceActivity.class);
+        finish();
         startActivity(intent);
+      }
+    });
+
+    LinearLayout divWoman = findViewById(R.id.divWoman);
+    divWoman.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        switchWoman.toggle();
+      }
+    });
+
+    LinearLayout divDisabled = findViewById(R.id.divDisabled);
+    divDisabled.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        switchDisabled.toggle();
+      }
+    });
+
+    LinearLayout divSmall = findViewById(R.id.divSmall);
+    divSmall.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        switchSmall.toggle();
       }
     });
 

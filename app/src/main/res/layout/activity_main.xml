@@ -36,12 +36,26 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:title="">
+                android:layout_gravity="left"
+                >
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+                    <androidx.appcompat.widget.SearchView
+                        android:layout_gravity="left"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:iconifiedByDefault="false"
+                        android:background="@android:color/transparent"
+                        app:searchIcon="@null"/>
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:srcCompat="@drawable/ic_search"/>
 
-                <SearchView
-                    android:id="@+id/searchView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                </LinearLayout>
+
 
             </androidx.appcompat.widget.Toolbar>
         </com.google.android.material.appbar.AppBarLayout>
@@ -68,7 +82,7 @@
                     android:layout_marginStart="35dp"
                     android:layout_marginLeft="35dp"
                     android:layout_marginBottom="35dp"
-
+                    android:background="@drawable/button_rectangle_white"
                     android:fontFamily="@font/robotobold"
                     android:shadowColor="#00000016"
                     android:shadowDx="2"

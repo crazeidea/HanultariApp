@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.content.Intent;
 import android.graphics.Camera;
+import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,6 +16,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SearchView;
+import android.widget.Toast;
 
 import androidx.annotation.LongDef;
 import androidx.annotation.NonNull;
@@ -50,7 +52,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 
-public class MainActivity extends FragmentActivity implements OnMapReadyCallback, NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends FragmentActivity implements OnMapReadyCallback, NavigationView.OnNavigationItemSelectedListener, NaverMap.OnLocationChangeListener {
   private static final String TAG = "MainActivity";
 
   private ImageButton btnLocateHere;
@@ -74,7 +76,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     DrawerLayout mainDrawerLayout = findViewById(R.id.mainDrawerLayout);
     Toolbar mainToolbar = findViewById(R.id.mainToolbar);
     NavigationView navigationView = findViewById(R.id.mainNavigationView);
-    SearchView search = findViewById(R.id.searchView);
+
+    /* 실시간 위치 정보 수신 */
+    locationSource = new FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE);
 
     ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, mainDrawerLayout, mainToolbar, R.string.open_drawer, R.string.close_drawer);
     mainDrawerLayout.addDrawerListener(toggle);
@@ -93,8 +97,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     }
     mapFragment.getMapAsync(this);
 
-    /* 실시간 위치 정보 수신 */
-    locationSource = new FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE);
+
 
   } // onCreate()
 
@@ -126,11 +129,17 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     btnLocateHere.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        CameraPosition currentLocation = new CameraPosition(new LatLng(locationSource.getLastLocation().getLatitude(), locationSource.getLastLocation().getLongitude()), 16);
-        CameraUpdate currentLocationCamera = CameraUpdate.toCameraPosition(currentLocation).animate(CameraAnimation.Fly);
-        naverMap.moveCamera(currentLocationCamera);
+        if(locationSource.isActivated()) {
+          CameraPosition currentLocation = new CameraPosition(new LatLng(locationSource.getLastLocation().getLatitude(), locationSource.getLastLocation().getLongitude()), 16);
+          CameraUpdate currentLocationCamera = CameraUpdate.toCameraPosition(currentLocation).animate(CameraAnimation.Fly);
+          naverMap.moveCamera(currentLocationCamera);
+        } else {
+          Toast.makeText(MainActivity.this, "위치 정보를 불러오는 중입니다.", Toast.LENGTH_SHORT).show();
+        }
+        
       }
     }); //btnLocateHere.onclick
+
   } // onMapReady()
 
   @Override
@@ -155,4 +164,17 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     }
   }
 
+  /* 위치 실시간 반영 */
+  @Override
+  public void onLocationChange(@NonNull Location location) {
+    if(locationSource.isActivated()) {
+      CameraPosition currentLocation = new CameraPosition(new LatLng(locationSource.getLastLocation().getLatitude(), locationSource.getLastLocation().getLongitude()), 16);
+      CameraUpdate currentLocationCamera = CameraUpdate.toCameraPosition(currentLocation).animate(CameraAnimation.Fly);
+      naverMap.moveCamera(currentLocationCamera);
+    } else {
+      Toast.makeText(MainActivity.this, "위치 정보를 불러오는 중입니다.", Toast.LENGTH_SHORT).show();
+    }
+
+
+  }
 }
