@@ -6,6 +6,7 @@ android {
     compileSdkVersion 30
     buildToolsVersion "30.0.2"
 
+
     defaultConfig {
         applicationId "com.hanultari.parking"
         minSdkVersion 16
@@ -14,6 +15,8 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        android.defaultConfig.vectorDrawables.useSupportLibrary = true
     }
 
     buildTypes {

@@ -3,35 +3,16 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_home"
-            android:icon="@android:drawable/ic_menu_camera"
-            android:title="HOME"/>
+            android:id="@+id/navFavorite"
+            android:icon="@drawable/ic_fav"
+            android:title="즐겨찾는 주차장"/>
         <item
-            android:id="@+id/nav_gallery"
-            android:icon="@android:drawable/ic_menu_gallery"
-            android:title="GALLERY"/>
+            android:id="@+id/navSetting"
+            android:icon="@drawable/ic_settings"
+            android:title="설정"/>
         <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@android:drawable/ic_menu_slideshow"
-            android:title="SLIDESHOW"/>
-        <item
-            android:id="@+id/nav_tools"
-            android:icon="@android:drawable/ic_menu_manage"
-            android:title="TOOLS" />
+            android:id="@+id/navLog"
+            android:icon="@drawable/ic_parking"
+            android:title="주차기록" />
     </group>
-
-    <item
-        android:id="@+id/communicate"
-        android:title="COMMUNICATE"
-        android:visible="false">
-        <menu>
-            <item
-                android:id="@+id/nav_share"
-                android:icon="@android:drawable/ic_menu_share"
-                android:title="SHARE">
-
-            </item>
-
-        </menu>
-    </item>
 </menu>
