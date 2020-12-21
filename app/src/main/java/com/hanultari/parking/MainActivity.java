@@ -1,36 +1,35 @@
 package com.hanultari.parking;
 
-import android.annotation.SuppressLint;
-import android.app.ActionBar;
 import android.content.Intent;
-import android.graphics.Camera;
 import android.location.Location;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.Toast;
 
-import androidx.annotation.LongDef;
 import androidx.annotation.NonNull;
 import androidx.annotation.UiThread;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityOptionsCompat;
+import androidx.core.util.Pair;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
-
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.navigation.NavigationView;
+import com.hanultari.parking.Activities.SearchActivity;
 import com.hanultari.parking.Activities.SettingActivity;
+import com.hanultari.parking.DTO.ParkingAdapter;
+import com.hanultari.parking.DTO.ParkingDTO;
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.map.CameraAnimation;
 import com.naver.maps.map.CameraPosition;
@@ -39,23 +38,16 @@ import com.naver.maps.map.LocationTrackingMode;
 import com.naver.maps.map.MapFragment;
 import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.OnMapReadyCallback;
-import com.naver.maps.map.UiSettings;
 import com.naver.maps.map.util.FusedLocationSource;
 
-import org.jsoup.nodes.Document;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.util.ArrayList;
 
 
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback, NavigationView.OnNavigationItemSelectedListener, NaverMap.OnLocationChangeListener {
   private static final String TAG = "MainActivity";
 
   private ImageButton btnLocateHere;
+
 
 
   /* 네이버 지도 관련 변수 */
@@ -79,13 +71,10 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
     /* 실시간 위치 정보 수신 */
     locationSource = new FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE);
-
     ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, mainDrawerLayout, mainToolbar, R.string.open_drawer, R.string.close_drawer);
     mainDrawerLayout.addDrawerListener(toggle);
     toggle.syncState();
-
     navigationView.setNavigationItemSelectedListener(this);
-
 
 
     /* 네이버 지도 Fragment 실행 */
@@ -97,6 +86,40 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     }
     mapFragment.getMapAsync(this);
 
+    /* 검색화면 전환 */
+    SearchView searchView = findViewById(R.id.mainActivitySearchView);
+    searchView.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        Intent intent = new Intent(MainActivity.this, SearchActivity.class);
+        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(MainActivity.this, v.findViewById(R.id.mainActivitySearchView), "searchView" );
+        startActivity(intent, options.toBundle());
+      }
+    });
+
+    /* 주변 주차장 찾기 클릭 */
+    Button buttonNear = findViewById(R.id.btnLocateNear);
+    buttonNear.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        RecyclerView recyclerView = findViewById(R.id.mainRecyclerView);
+        Animation animation = new AlphaAnimation(0, 1);
+        animation.setDuration(300);
+        recyclerView.setAnimation(animation);
+        recyclerView.setVisibility(View.VISIBLE);
+        recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+        ArrayList<ParkingDTO> list = new ArrayList<>();
+        ParkingDTO e = new ParkingDTO();
+        e.setName("TEST1");
+        e.setFare(1000);
+        e.setDistance("1000m");
+        list.add(e);
+        list.add(e);
+        list.add(e);
+        ParkingAdapter adapter = new ParkingAdapter(list);
+        recyclerView.setAdapter(adapter);
+      }
+    });
 
 
   } // onCreate()

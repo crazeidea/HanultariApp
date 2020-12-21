@@ -2,12 +2,12 @@ package com.hanultari.parking.DTO;
 
 public class ParkingDTO {
   private String id, name, addr, prev_addr, manager, contact, oper_mon, oper_tue, oper_wed, oper_thu, oper_fri, oper_sat, oper_sun, start_time, end_time, payment_cash, payment_card, payment_machine, layout, indoor, smallcar, woman, disabled, paid, distance;
-  private float lat, lon;
+  private float lat, lng;
   private int parked, total, fare, added_fare, duration, duration_interval;
 
   public ParkingDTO() {}
 
-  public ParkingDTO(String id, String name, String addr, String prev_addr, String manager, String contact, String oper_mon, String oper_tue, String oper_wed, String oper_thu, String oper_fri, String oper_sat, String oper_sun, String start_time, String end_time, String payment_cash, String payment_card, String payment_machine, String layout, String indoor, String smallcar, String woman, String disabled, String paid, String distance, float lat, float lon, int parked, int total, int fare, int added_fare, int duration, int duration_interval) {
+  public ParkingDTO(String id, String name, String addr, String prev_addr, String manager, String contact, String oper_mon, String oper_tue, String oper_wed, String oper_thu, String oper_fri, String oper_sat, String oper_sun, String start_time, String end_time, String payment_cash, String payment_card, String payment_machine, String layout, String indoor, String smallcar, String woman, String disabled, String paid, String distance, float lat, float lng, int parked, int total, int fare, int added_fare, int duration, int duration_interval) {
     this.id = id;
     this.name = name;
     this.addr = addr;
@@ -34,7 +34,7 @@ public class ParkingDTO {
     this.paid = paid;
     this.distance = distance;
     this.lat = lat;
-    this.lon = lon;
+    this.lng = lng;
     this.parked = parked;
     this.total = total;
     this.fare = fare;
@@ -251,12 +251,12 @@ public class ParkingDTO {
     this.lat = lat;
   }
 
-  public float getLon() {
-    return lon;
+  public float getLng() {
+    return lng;
   }
 
-  public void setLon(float lon) {
-    this.lon = lon;
+  public void setLng(float lng) {
+    this.lng = lng;
   }
 
   public int getParked() {
