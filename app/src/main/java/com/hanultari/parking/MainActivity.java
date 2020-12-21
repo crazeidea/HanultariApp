@@ -50,6 +50,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 
+
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback, NavigationView.OnNavigationItemSelectedListener {
   private static final String TAG = "MainActivity";
 
@@ -154,5 +155,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
       super.onBackPressed();
     }
   }
+
 
 }
