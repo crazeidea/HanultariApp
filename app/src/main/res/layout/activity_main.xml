@@ -63,6 +63,13 @@
 
                 </LinearLayout>
 
+<!--<<<<<<< HEAD-->
+                <SearchView
+                    android:id="@+id/searchView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+<!--=======
+>>>>>>> b703333342c4ce38043a38d4a1c9cce262527e3f-->
 
             </androidx.appcompat.widget.Toolbar>
         </com.google.android.material.appbar.AppBarLayout>

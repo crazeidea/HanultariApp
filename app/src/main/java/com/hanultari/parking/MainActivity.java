@@ -43,7 +43,8 @@ import com.naver.maps.map.util.FusedLocationSource;
 import java.util.ArrayList;
 
 
-public class MainActivity extends FragmentActivity implements OnMapReadyCallback, NavigationView.OnNavigationItemSelectedListener, NaverMap.OnLocationChangeListener {
+
+public class MainActivity extends FragmentActivity implements OnMapReadyCallback, NavigationView.OnNavigationItemSelectedListener {
   private static final String TAG = "MainActivity";
 
   private ImageButton btnLocateHere;
@@ -187,6 +188,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     }
   }
 
+//<<<<<<< HEAD
+
+//=======
   /* 위치 실시간 반영 */
   @Override
   public void onLocationChange(@NonNull Location location) {
