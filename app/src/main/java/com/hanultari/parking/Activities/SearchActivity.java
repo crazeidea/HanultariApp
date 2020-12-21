@@ -2,6 +2,7 @@ package com.hanultari.parking.Activities;
 
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.View;
 import android.widget.SearchView;
 
 import androidx.annotation.Nullable;
@@ -14,5 +15,7 @@ public class SearchActivity extends AppCompatActivity {
   protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_search);
+
+
   }
 }

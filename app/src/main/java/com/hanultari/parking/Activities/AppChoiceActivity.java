@@ -46,7 +46,7 @@ public class AppChoiceActivity extends AppCompatActivity {
         editor.putString("map", "naver");
         editor.apply();
         editor.commit();
-        finish();
+        itemSelected(v);
       }
     });
 
@@ -58,7 +58,7 @@ public class AppChoiceActivity extends AppCompatActivity {
         editor.putString("map", "kakao");
         editor.apply();
         editor.commit();
-        finish();
+        itemSelected(v);
       }
     });
 
@@ -70,8 +70,20 @@ public class AppChoiceActivity extends AppCompatActivity {
         editor.putString("map", "google");
         editor.apply();
         editor.commit();
-        finish();
+        itemSelected(v);
       }
     });
+  }
+
+  @Override
+  public void onBackPressed() {
+    itemSelected(getWindow().getDecorView().getRootView());
+  }
+
+  public void itemSelected(View v){
+    Intent refresh = new Intent(this, SettingActivity.class);
+    startActivity(refresh);
+    this.finish();
+
   }
 }
