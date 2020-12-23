@@ -129,6 +129,7 @@
                         android:layout_height="match_parent"
                         android:background="@drawable/button_locatehere"
                         app:srcCompat="@drawable/ic_marker" />
+
                 </androidx.cardview.widget.CardView>
 
                 <androidx.recyclerview.widget.RecyclerView
@@ -141,9 +142,9 @@
                     android:layout_marginEnd="35dp"
                     android:layout_marginRight="35dp"
                     android:layout_marginBottom="115dp"
-                    android:padding="20dp"
                     android:background="#FFFFFF"
-                    android:visibility="invisible"
+                    android:padding="20dp"
+                    android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

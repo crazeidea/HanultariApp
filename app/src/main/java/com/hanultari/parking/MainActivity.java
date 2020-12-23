@@ -1,16 +1,23 @@
 package com.hanultari.parking;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Camera;
+import android.graphics.PointF;
+import android.icu.text.IDNA;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.Toast;
 
@@ -30,6 +37,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.navigation.NavigationView;
 import com.hanultari.parking.Activities.SearchActivity;
 import com.hanultari.parking.Activities.SettingActivity;
+import com.hanultari.parking.Adapter.InfoWindowAdapter;
 import com.hanultari.parking.AsyncTasks.SelectMarker;
 import com.hanultari.parking.DTO.LatlngDTO;
 import com.hanultari.parking.DTO.ParkingAdapter;
@@ -42,7 +50,9 @@ import com.naver.maps.map.LocationTrackingMode;
 import com.naver.maps.map.MapFragment;
 import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.OnMapReadyCallback;
+import com.naver.maps.map.overlay.InfoWindow;
 import com.naver.maps.map.overlay.Marker;
+import com.naver.maps.map.overlay.Overlay;
 import com.naver.maps.map.overlay.OverlayImage;
 import com.naver.maps.map.util.FusedLocationSource;
 
@@ -65,13 +75,13 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
   ArrayList<ParkingDTO> dtos;
 
+  /* 레이아웃 관련 변수 */
+  RecyclerView recyclerView;
+
   /* 네이버 지도 관련 변수 */
   private static final int LOCATION_PERMISSION_REQUEST_CODE = 1000;
   private FusedLocationSource locationSource;
   public static NaverMap naverMap;
-
-
-
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
@@ -119,15 +129,15 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
 
     /* 주변 주차장 찾기 클릭 */
+
     Button buttonNear = findViewById(R.id.btnLocateNear);
     buttonNear.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
-        RecyclerView recyclerView = findViewById(R.id.mainRecyclerView);
-        Animation animation = new AlphaAnimation(0, 1);
-        animation.setDuration(300);
-        recyclerView.setAnimation(animation);
-        recyclerView.setVisibility(View.VISIBLE);
+        Log.d(TAG, "onClick: buttonNear Clicked!");
+
+        recyclerView = findViewById(R.id.mainRecyclerView);
+
         recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
         ArrayList<ParkingDTO> list = new ArrayList<>();
         ParkingDTO e = new ParkingDTO();
@@ -139,6 +149,20 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         list.add(e);
         ParkingAdapter adapter = new ParkingAdapter(list);
         recyclerView.setAdapter(adapter);
+        if(recyclerView.getVisibility() == View.GONE) {
+          Log.d(TAG, "recyclerView Visibility : " + recyclerView.getVisibility());
+          Animation animation = new AlphaAnimation(0, 1);
+          animation.setDuration(300);
+          recyclerView.setAnimation(animation);
+          recyclerView.setVisibility(View.VISIBLE);
+        } else if (recyclerView.getVisibility() == View.VISIBLE) {
+          Log.d(TAG, "recyclerView Visibility : " + recyclerView.getVisibility());
+          Animation animation = new AlphaAnimation(1, 0);
+          animation.setDuration(300);
+          recyclerView.setAnimation(animation);
+          recyclerView.setVisibility(View.GONE);
+        }
+
       }
     });
 
@@ -167,22 +191,62 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     naverMap.setMinZoom(12);
     naverMap.setMaxZoom(21);
 
-    /* 마커 */
+
+    /* 마커 생성 */
     try {
       Log.d(TAG, "onCreate: Initialized Marker Creation");
-      JSONArray list = new SelectMarker().execute().get();
-      for (int i = 0; i < list.length(); i++ ) {
-        JSONObject object = list.getJSONObject(i);
-        LatLng latLng = new LatLng(object.getDouble("lat"), object.getDouble("lng"));
-        Marker marker = new Marker();
-        marker.setPosition(latLng);
-        marker.setMap(naverMap);
-        Log.d(TAG, "onCreate: Marker Created on :" + object.getDouble("lat") + ", " + object.getDouble("lng") + "");
+        JSONArray list = new SelectMarker().execute().get();
+        if(list != null) {
+          for (int i = 0; i < list.length(); i++) {
+            JSONObject object = list.getJSONObject(i);
+            LatLng latLng = new LatLng(object.getDouble("lat"), object.getDouble("lng"));
+            Marker marker = new Marker();
+            marker.setPosition(latLng);
+            marker.setTag(object.get("id"));
+            marker.setMap(naverMap);
+            marker.setOnClickListener(new Overlay.OnClickListener() {
+              @Override
+              public boolean onClick(@NonNull Overlay overlay) {
+                Log.d(TAG, "onClick: Marker Clicked");
+                LatLng markerPosition = new LatLng(marker.getPosition().latitude + 0.0015, marker.getPosition().longitude);
+                CameraPosition cameraPosition = new CameraPosition(markerPosition, 16);
+                CameraUpdate cameraUpdate = CameraUpdate.toCameraPosition(cameraPosition);
+                naverMap.moveCamera(cameraUpdate);
+                Log.d(TAG, "onClick: " + markerPosition.latitude + ", " + markerPosition.longitude);
+
+                return false;
+              }
+            });
+            };
+          }
+      } catch(Exception e){
+        Log.d(TAG, "onCreate: Marker Creation ERROR");
+        e.printStackTrace();
       }
-    } catch (Exception e) {
-      Log.d(TAG, "onCreate: Marker Creation ERROR");
-      e.printStackTrace();
-    }
+
+    naverMap.setOnMapClickListener(new NaverMap.OnMapClickListener() {
+      @Override
+      public void onMapClick(@NonNull PointF pointF, @NonNull LatLng latLng) {
+        Log.d(TAG, "onMapClick: " + latLng.latitude + ", " + latLng.longitude);
+        recyclerView = findViewById(R.id.mainRecyclerView);
+        if(recyclerView.getVisibility() == View.VISIBLE) {
+          recyclerView.setVisibility(View.GONE);
+        }
+      }
+    });
+
+//    naverMap.addOnCameraChangeListener(new NaverMap.OnCameraChangeListener() {
+//      @Override
+//      public void onCameraChange(int i, boolean b) {
+//        recyclerView = findViewById(R.id.mainRecyclerView);
+//        if (recyclerView.getVisibility() == View.VISIBLE) {
+//          Animation animation = new AlphaAnimation(0, 1);
+//          animation.setDuration(300);
+//          recyclerView.setAnimation(animation);
+//          recyclerView.setVisibility(View.INVISIBLE);
+//        }
+//      }
+//    });
 
 
     ImageButton btnLocateHere = findViewById(R.id.btnLocateHere);
