@@ -35,10 +35,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.navigation.NavigationView;
+import com.hanultari.parking.Activities.DetailActivity;
 import com.hanultari.parking.Activities.SearchActivity;
 import com.hanultari.parking.Activities.SettingActivity;
 import com.hanultari.parking.Adapter.InfoWindowAdapter;
 import com.hanultari.parking.AsyncTasks.SelectMarker;
+import com.hanultari.parking.AsyncTasks.SelectParking;
 import com.hanultari.parking.DTO.LatlngDTO;
 import com.hanultari.parking.DTO.ParkingAdapter;
 import com.hanultari.parking.DTO.ParkingDTO;
@@ -64,6 +66,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 
 import static com.hanultari.parking.AsyncTasks.CommonMethod.ipConfig;
@@ -96,10 +99,10 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
     /* 네이버 지도 Fragment 실행 */
     FragmentManager fm = getSupportFragmentManager();
-    MapFragment mapFragment = (MapFragment) fm.findFragmentById(R.id.map);
+    MapFragment mapFragment = (MapFragment) fm.findFragmentById(R.id.mainmap);
     if (mapFragment == null) {
       mapFragment = MapFragment.newInstance();
-      fm.beginTransaction().add(R.id.map, mapFragment).commit();
+      fm.beginTransaction().add(R.id.mainmap, mapFragment).commit();
     }
     mapFragment.getMapAsync(this);
 
@@ -170,17 +173,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
   } // onCreate()
 
 
-  @Override
-  public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-    if (locationSource.onRequestPermissionsResult(requestCode, permissions, grantResults)) {
-      if (!locationSource.isActivated()) { // 권한 거부됨
-        naverMap.setLocationTrackingMode(LocationTrackingMode.None);
-      }
-      return;
-    }
-    super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-  }
-
 
   @UiThread
   @Override
@@ -188,11 +180,13 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
     naverMap.setLocationSource(locationSource);
     naverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
-    naverMap.setMinZoom(12);
+    naverMap.setLocale(Locale.KOREA);
+    naverMap.setMinZoom(16);
     naverMap.setMaxZoom(21);
 
 
     /* 마커 생성 */
+    InfoWindow infoWindow = new InfoWindow();
     try {
       Log.d(TAG, "onCreate: Initialized Marker Creation");
         JSONArray list = new SelectMarker().execute().get();
@@ -204,15 +198,39 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             marker.setPosition(latLng);
             marker.setTag(object.get("id"));
             marker.setMap(naverMap);
+            /* 마커 클릭 시 이벤트 */
             marker.setOnClickListener(new Overlay.OnClickListener() {
               @Override
               public boolean onClick(@NonNull Overlay overlay) {
-                Log.d(TAG, "onClick: Marker Clicked");
-                LatLng markerPosition = new LatLng(marker.getPosition().latitude + 0.0015, marker.getPosition().longitude);
-                CameraPosition cameraPosition = new CameraPosition(markerPosition, 16);
+                Log.d(TAG, "onClick: Marker Clicked / MarkerID : " + marker.getTag());
+
+                LatLng currentLocation = new LatLng(locationSource.getLastLocation().getLatitude(), locationSource.getLastLocation().getLongitude());
+                LatLng markerLocation = new LatLng(marker.getPosition().latitude, marker.getPosition().longitude);
+                CameraPosition cameraPosition = new CameraPosition(markerLocation, 16);
                 CameraUpdate cameraUpdate = CameraUpdate.toCameraPosition(cameraPosition);
                 naverMap.moveCamera(cameraUpdate);
-                Log.d(TAG, "onClick: " + markerPosition.latitude + ", " + markerPosition.longitude);
+                Log.d(TAG, "onClick: " + markerLocation.latitude + ", " + markerLocation.longitude);
+
+                ViewGroup rootView = findViewById(R.id.mainmap);
+                infoWindow.setAdapter(new InfoWindowAdapter(MainActivity.this, rootView, marker.getTag().toString(), currentLocation, markerLocation));
+                infoWindow.open(marker);
+                infoWindow.setOnClickListener(new Overlay.OnClickListener() {
+                  @Override
+                  public boolean onClick(@NonNull Overlay overlay) {
+                    Intent intent = new Intent(MainActivity.this, DetailActivity.class);
+                    intent.putExtra("id", marker.getTag().toString());
+                    intent.putExtra("currentLocation", currentLocation);
+                    SelectParking selectParking = new SelectParking();
+                    try {
+                      intent.putExtra("markerName", selectParking.execute(marker.getTag().toString()).get().toString());
+                    } catch (Exception e){
+                      e.printStackTrace();
+                    }
+                    startActivity(intent);
+
+                    return true;
+                  }
+                });
 
                 return false;
               }
@@ -224,29 +242,37 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         e.printStackTrace();
       }
 
+    /* 지도 클릭 시 이벤트 */
     naverMap.setOnMapClickListener(new NaverMap.OnMapClickListener() {
       @Override
       public void onMapClick(@NonNull PointF pointF, @NonNull LatLng latLng) {
         Log.d(TAG, "onMapClick: " + latLng.latitude + ", " + latLng.longitude);
+        /* 지도 클릭 시 주변 주차장 화면 제거 */
         recyclerView = findViewById(R.id.mainRecyclerView);
         if(recyclerView.getVisibility() == View.VISIBLE) {
+          Animation animation = new AlphaAnimation(1, 0);
+          animation.setDuration(300);
           recyclerView.setVisibility(View.GONE);
         }
       }
     });
 
-//    naverMap.addOnCameraChangeListener(new NaverMap.OnCameraChangeListener() {
-//      @Override
-//      public void onCameraChange(int i, boolean b) {
-//        recyclerView = findViewById(R.id.mainRecyclerView);
-//        if (recyclerView.getVisibility() == View.VISIBLE) {
-//          Animation animation = new AlphaAnimation(0, 1);
-//          animation.setDuration(300);
-//          recyclerView.setAnimation(animation);
-//          recyclerView.setVisibility(View.INVISIBLE);
-//        }
-//      }
-//    });
+    /* 지도 스크롤 시 이벤트 */
+    naverMap.addOnCameraChangeListener(new NaverMap.OnCameraChangeListener() {
+      @Override
+      public void onCameraChange(int i, boolean b) {
+        /* 카메라 이동 시 주변 주차장 화면 제거 */
+        recyclerView = findViewById(R.id.mainRecyclerView);
+        if (recyclerView.getVisibility() == View.VISIBLE) {
+          Animation animation = new AlphaAnimation(1, 0);
+          animation.setDuration(300);
+          recyclerView.setAnimation(animation);
+          recyclerView.setVisibility(View.GONE);
+        }
+        /* 카메라 이동 시 InfoWindow 제거 */
+          infoWindow.close();
+      }
+    });
 
 
     ImageButton btnLocateHere = findViewById(R.id.btnLocateHere);
@@ -295,6 +321,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     return true;
   }
 
+  /* 사이드바 뒤로가기 처리 */
   @Override
   public void onBackPressed() {
     DrawerLayout mainDrawerLayout = findViewById(R.id.mainDrawerLayout);
@@ -305,33 +332,16 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     }
   }
 
-  public class getMarkerData extends AsyncTask<Void, Void, Void> {
-
-    @Override
-    protected void onPreExecute() {
-      super.onPreExecute();
-    }
-
-    @Override
-    protected Void doInBackground(Void... voids) {
-      String json = "";
-      try {
-        String urlAddr = ipConfig + "/app/getMarkerData";
-        URL url = new URL(urlAddr);
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-
-
-      } catch (Exception e) {
-        e.printStackTrace();
+  @Override
+  public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    if (locationSource.onRequestPermissionsResult(requestCode, permissions, grantResults)) {
+      if (!locationSource.isActivated()) { // 권한 거부됨
+        naverMap.setLocationTrackingMode(LocationTrackingMode.None);
       }
-
-      return null;
+      return;
     }
-
-    @Override
-    protected void onPostExecute(Void aVoid) {
-      super.onPostExecute(aVoid);
-    }
+    super.onRequestPermissionsResult(requestCode, permissions, grantResults);
   }
 
 }
+

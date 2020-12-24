@@ -5,6 +5,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
 
+import com.naver.maps.geometry.LatLng;
+
 public class CommonMethod {
 
   public static String  ipConfig = "http://192.168.0.113:8080";
@@ -28,6 +30,32 @@ public class CommonMethod {
       return false;
     }
 
+  }
+
+  public static double getDistance(LatLng current, LatLng target){
+    double currentLat = current.latitude;
+    double currentLng = current.longitude;
+    double targetLat = target.latitude;
+    double targetLng = target.longitude;
+    double theta = currentLng - targetLng;
+
+    double dist = Math.sin(deg2rad(currentLat))
+            * Math.sin(deg2rad(targetLat))
+            + Math.cos(deg2rad(currentLat))
+            * Math.cos(deg2rad(targetLat))
+            * Math.cos(deg2rad(theta));
+    dist = Math.acos(dist);
+    dist = rad2deg(dist);
+    dist = dist * 60 * 1.1515 / 0.62137;
+    return (dist);
+  }
+
+  public static double deg2rad(double deg) {
+    return (deg * Math.PI / 180.0);
+  }
+
+  public static double rad2deg(double rad) {
+    return (rad * 180.0 / Math.PI);
   }
 
 

@@ -8,7 +8,7 @@
     android:layout_marginRight="5dp">
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/mainPhoto"
         android:layout_width="0dp"
         android:layout_height="200dp"
         android:background="#000000"
@@ -24,6 +24,8 @@
         android:background="@drawable/activity_detail_background"
         android:padding="25dp"
         android:scrollbars="none"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
@@ -63,30 +65,29 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/tvDetailTitle"
+                android:id="@+id/detailName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/robotobold"
                 android:text="농성동 공영주차장"
                 android:textColor="@color/black"
-                android:textSize="40sp"
+                android:textSize="32sp"
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/tvDetailStatus"
+                android:id="@+id/detailCurrent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/robotobold"
                 android:text="현재 3자리 남아있어요."
                 android:textColor="@color/black"
-                android:textSize="30sp" />
+                android:textSize="24sp" />
 
             <Space
                 android:layout_width="match_parent"
                 android:layout_height="40dp" />
 
             <TextView
-                android:id="@+id/tvDetailStatusTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/robotobold"
@@ -103,7 +104,6 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/tvDetailStatus2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/robotobold"
@@ -115,23 +115,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="10dp" />
 
-            <fragment
-                android:id="@+id/map"
-                android:name="com.naver.maps.map.MapFragment"
-                android:layout_width="match_parent"
-                android:layout_height="300dp" />
-
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="10dp" />
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/tvDetailFare"
+                    android:id="@+id/detailFare"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="10dp"
@@ -141,7 +131,7 @@
                     android:textSize="26sp" />
 
                 <TextView
-                    android:id="@+id/tvDetailAddedFare"
+                    android:id="@+id/detailAddedFare"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/robotobold"
@@ -159,7 +149,6 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/tvDetailOperTimeTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="10dp"
@@ -169,11 +158,10 @@
                     android:textSize="20sp" />
 
                 <TextView
-                    android:id="@+id/tvDetailOperTimeContent"
+                    android:id="@+id/detailOperTime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/robotobold"
-                    android:text="추가 요금 1,000원 / 15분"
                     android:textColor="@color/black"
                     android:textSize="20sp" />
             </LinearLayout>
@@ -188,7 +176,6 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/tvDetailAddrTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="10dp"
@@ -210,7 +197,7 @@
 
                 <LinearLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_weight="4"
                     android:baselineAligned="false"
                     android:gravity="center_vertical"
@@ -218,7 +205,7 @@
                     android:paddingBottom="10dp">
 
                     <TextView
-                        android:id="@+id/tvDetailAddr"
+                        android:id="@+id/detailAddr"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="10dp"
@@ -228,7 +215,7 @@
                         android:textSize="16sp" />
 
                     <TextView
-                        android:id="@+id/tvDetailPrevAddr"
+                        android:id="@+id/detailPrevAddr"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="10dp"
@@ -240,7 +227,7 @@
                 </LinearLayout>
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnShare"
+                    android:id="@+id/detailShare"
                     android:layout_width="60dp"
                     android:layout_height="60dp"
                     android:backgroundTint="@color/primary"
@@ -271,7 +258,6 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/tvDetailManagerTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="10dp"
@@ -294,8 +280,8 @@
                 android:weightSum="4">
 
                 <LinearLayout
-                    android:layout_width="311dp"
-                    android:layout_height="wrap_content"
+                    android:layout_width="369dp"
+                    android:layout_height="match_parent"
                     android:layout_weight="3"
                     android:baselineAligned="false"
                     android:gravity="center_vertical"
@@ -303,7 +289,7 @@
                     android:paddingBottom="10dp">
 
                     <TextView
-                        android:id="@+id/tvDetailManagerName"
+                        android:id="@+id/detailManager"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="10dp"
@@ -313,7 +299,7 @@
                         android:textSize="16sp" />
 
                     <TextView
-                        android:id="@+id/tvDetailManagerContact"
+                        android:id="@+id/detailManagerContact"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="10dp"
@@ -322,13 +308,33 @@
                         android:textColor="@color/gray"
                         android:textSize="12sp" />
 
-                    <Space
-                        android:layout_width="match_parent"
-                        android:layout_height="40dp" />
-
                 </LinearLayout>
 
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/detailCall"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:backgroundTint="@color/primary"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"
+                    app:cornerRadius="40dp"
+                    app:icon="@android:drawable/ic_menu_call"
+                    app:iconGravity="textStart"
+                    app:iconPadding="@dimen/cardview_default_radius"
+                    app:iconSize="30dp"
+                    app:iconTint="@android:color/white"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:rippleColor="@color/secondary"
+                    app:strokeColor="@color/primary"
+                    app:strokeWidth="3dp" />
+
             </LinearLayout>
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="100dp" />
 
 
         </LinearLayout>
@@ -344,7 +350,7 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <Button
-            android:id="@+id/button5"
+            android:id="@+id/detailNav"
             android:layout_width="318dp"
             android:layout_height="wrap_content"
             android:text="Button" />

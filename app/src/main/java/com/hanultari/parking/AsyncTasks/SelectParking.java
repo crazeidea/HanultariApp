@@ -17,14 +17,14 @@ import static com.hanultari.parking.AsyncTasks.CommonMethod.ipConfig;
 
 public class SelectParking extends AsyncTask<String, Void, JSONObject> {
 
-  JSONObject list;
+  JSONObject object;
 
 
 
   @Override
   protected JSONObject doInBackground(String... id) {
     try {
-      String postURL = String.format("%s/app/getParkingData?id=%s", ipConfig, id[0]);
+      String postURL = String.format("%s/app/getSingleParkingData?id=%s", ipConfig, id[0]);
       URL url = new URL(postURL);
       HttpURLConnection conn = (HttpURLConnection) url.openConnection();
       InputStream is = new BufferedInputStream(conn.getInputStream());
@@ -38,13 +38,13 @@ public class SelectParking extends AsyncTask<String, Void, JSONObject> {
 
       String result = builder.toString();
 
-      list = new JSONObject(result);
+      object = new JSONObject(result);
       conn.disconnect();
       br.close();
       is.close();
     } catch (Exception e){
       e.printStackTrace();
     }
-    return list;
+    return object;
   }
 }
