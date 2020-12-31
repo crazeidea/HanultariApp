@@ -1,5 +1,6 @@
 package com.hanultari.parking.Activities;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -7,7 +8,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.GestureDetector;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
@@ -16,6 +19,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -50,12 +54,14 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
   int seatHeight = 100;
   int seatGaping = 5;
 
+  @SuppressLint("ClickableViewAccessibility")
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_detail);
 
     /* 레이아웃 관련 변수 */
+    com.hanultari.parking.Custom.CustomScrollView scrollView = findViewById(R.id.detailScrollView);
     TextView name = findViewById(R.id.detailName);
     TextView status = findViewById(R.id.detailCurrent);
     TextView fare = findViewById(R.id.detailFare);
@@ -71,18 +77,27 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
     WebView pano = findViewById(R.id.detailPanorama);
 
     Intent intent = getIntent();
+
     String url = ipConfig + "/getParkingPanorama?id=" + intent.getStringExtra("id");
-    Log.d(TAG, "onCreate: " + url);
+
+    /* 상단 로드뷰 구현 */
     pano.getSettings().setRenderPriority(WebSettings.RenderPriority.HIGH);
     pano.setWebViewClient(new WebViewClient());
     pano.setWebChromeClient(new WebChromeClient());
     pano.setNetworkAvailable(true);
     pano.getSettings().setJavaScriptEnabled(true);
-
-    //// Sets whether the DOM storage API is enabled.
     pano.getSettings().setDomStorageEnabled(true);
-    ////
     pano.loadUrl(url);
+
+    /* 로드뷰 스크롤시 ScrollView 스크롤 방지 */
+    pano.setOnTouchListener(new View.OnTouchListener() {
+      @Override
+      public boolean onTouch(View v, MotionEvent event) {
+        scrollView.setEnableScrolling(event.getAction() != MotionEvent.ACTION_SCROLL);
+        return false;
+      }
+    });
+
 
     SelectParking selectParking = new SelectParking();
     LatLng currentLocation = intent.getParcelableExtra("currentLocation");
@@ -92,7 +107,7 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
       name.setText(parking.getString("name"));
       status.setText("현재 " + (parking.getInt("total") - parking.getInt("parked")) + "자리 남아있어요.");
       fare.setText("기본요금 " + parking.getInt("fare") + "원");
-      addedFare.setText("추가 요금 " + parking.getInt("added_fare"));
+      addedFare.setText("추가 요금 " + parking.getInt("added_fare") + "원");
       opertime.setText(parking.getString("start_time") + " ~ " + parking.getString("end_time"));
       addr.setText(parking.getString("addr"));
       prevAddr.setText(parking.getString("prev_addr"));
@@ -101,6 +116,7 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
       String number = parking.getString("contact");
       number.replace("-", "");
       latLng = new LatLng(parking.getDouble("lat"), parking.getDouble("lng"));
+      
       Uri callnumber = Uri.parse("tel:" + number);
 
       call.setOnClickListener(new View.OnClickListener() {
