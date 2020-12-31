@@ -10,6 +10,10 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -33,6 +37,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.hanultari.parking.AsyncTasks.CommonMethod.ipConfig;
 
 public class DetailActivity extends AppCompatActivity implements OnMapReadyCallback {
   private static final String TAG = "DetailActivity";
@@ -62,8 +68,22 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
     Button share = findViewById(R.id.detailShare);
     Button call = findViewById(R.id.detailCall);
     Button nav = findViewById(R.id.detailNav);
+    WebView pano = findViewById(R.id.detailPanorama);
 
     Intent intent = getIntent();
+    String url = ipConfig + "/getParkingPanorama?id=" + intent.getStringExtra("id");
+    Log.d(TAG, "onCreate: " + url);
+    pano.getSettings().setRenderPriority(WebSettings.RenderPriority.HIGH);
+    pano.setWebViewClient(new WebViewClient());
+    pano.setWebChromeClient(new WebChromeClient());
+    pano.setNetworkAvailable(true);
+    pano.getSettings().setJavaScriptEnabled(true);
+
+    //// Sets whether the DOM storage API is enabled.
+    pano.getSettings().setDomStorageEnabled(true);
+    ////
+    pano.loadUrl(url);
+
     SelectParking selectParking = new SelectParking();
     LatLng currentLocation = intent.getParcelableExtra("currentLocation");
     try {

@@ -7,20 +7,9 @@
     android:layout_marginEnd="5dp"
     android:layout_marginRight="5dp">
 
-    <ImageView
-        android:id="@+id/mainPhoto"
-        android:layout_width="0dp"
-        android:layout_height="200dp"
-        android:background="#000000"
-        android:scaleType="center"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="120dp"
         android:background="@drawable/activity_detail_background"
         android:padding="25dp"
         android:scrollbars="none"
@@ -28,10 +17,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
+
+            <WebView
+                android:id="@+id/detailPanorama"
+                android:layout_width="match_parent"
+                android:layout_height="214dp"
+                android:layout_marginBottom="10dp" />
 
             <LinearLayout
                 android:layout_width="wrap_content"

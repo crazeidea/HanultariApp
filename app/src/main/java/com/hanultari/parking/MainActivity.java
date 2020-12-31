@@ -113,11 +113,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     toggle.syncState();
     navigationView.setNavigationItemSelectedListener(this);
 
-
-
-
-
-
     /* 검색화면 전환 */
     SearchView searchView = findViewById(R.id.mainActivitySearchView);
     searchView.setOnClickListener(new View.OnClickListener() {
@@ -129,10 +124,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
       }
     });
 
-
-
     /* 주변 주차장 찾기 클릭 */
-
     Button buttonNear = findViewById(R.id.btnLocateNear);
     buttonNear.setOnClickListener(new View.OnClickListener() {
       @Override
@@ -168,8 +160,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
       }
     });
-
-
   } // onCreate()
 
 
@@ -181,7 +171,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     naverMap.setLocationSource(locationSource);
     naverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
     naverMap.setLocale(Locale.KOREA);
-    naverMap.setMinZoom(16);
+    naverMap.setMinZoom(6);
     naverMap.setMaxZoom(21);
 
 
@@ -195,6 +185,13 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             JSONObject object = list.getJSONObject(i);
             LatLng latLng = new LatLng(object.getDouble("lat"), object.getDouble("lng"));
             Marker marker = new Marker();
+            /* 상태 별 마커 아이콘 변경 */
+            if((object.getInt("total") - object.getInt("parked")) == 0) {
+              marker.setIcon(OverlayImage.fromResource(R.drawable.ic_marker_na));
+            } else {
+              if (object.getInt("paid") == 1) marker.setIcon(OverlayImage.fromResource(R.drawable.ic_marker_paid));
+              else marker.setIcon(OverlayImage.fromResource(R.drawable.ic_marker_free));
+            }
             marker.setPosition(latLng);
             marker.setTag(object.get("id"));
             marker.setMap(naverMap);

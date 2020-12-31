@@ -24,7 +24,7 @@ public class SelectMarker extends AsyncTask<Void, Void, JSONArray> {
   @Override
   protected JSONArray doInBackground(Void... voids) {
     try {
-      URL url = new URL(ipConfig + "/app/getMarkerData");
+      URL url = new URL(ipConfig + "/getMarkerData");
       HttpURLConnection conn = (HttpURLConnection) url.openConnection();
       InputStream is = new BufferedInputStream(conn.getInputStream());
       BufferedReader br = new BufferedReader(new InputStreamReader(is, "UTF-8"));

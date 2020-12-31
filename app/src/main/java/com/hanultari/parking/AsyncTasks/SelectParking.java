@@ -24,7 +24,7 @@ public class SelectParking extends AsyncTask<String, Void, JSONObject> {
   @Override
   protected JSONObject doInBackground(String... id) {
     try {
-      String postURL = String.format("%s/app/getSingleParkingData?id=%s", ipConfig, id[0]);
+      String postURL = String.format("%s/getSingleParkingData?id=%s", ipConfig, id[0]);
       URL url = new URL(postURL);
       HttpURLConnection conn = (HttpURLConnection) url.openConnection();
       InputStream is = new BufferedInputStream(conn.getInputStream());
