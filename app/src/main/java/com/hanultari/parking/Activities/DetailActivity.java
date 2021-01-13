@@ -2,13 +2,11 @@ package com.hanultari.parking.Activities;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -19,12 +17,10 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
 
 
 import com.hanultari.parking.AsyncTasks.SelectParking;
@@ -32,17 +28,15 @@ import com.hanultari.parking.R;
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.map.CameraPosition;
 import com.naver.maps.map.CameraUpdate;
-import com.naver.maps.map.MapFragment;
 import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.OnMapReadyCallback;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.hanultari.parking.AsyncTasks.CommonMethod.ipConfig;
+import static com.hanultari.parking.CommonMethod.ipConfig;
 
 public class DetailActivity extends AppCompatActivity implements OnMapReadyCallback {
   private static final String TAG = "DetailActivity";
@@ -50,7 +44,7 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
   LatLng latLng;
 
   List<TextView> seatViewList = new ArrayList<>();
-  int seatWidth = 70;
+  int seatWidth = 100;
   int seatHeight = 100;
   int seatGaping = 5;
 
@@ -71,10 +65,11 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
     TextView prevAddr = findViewById(R.id.detailPrevAddr);
     TextView manager = findViewById(R.id.detailManager);
     TextView contact = findViewById(R.id.detailManagerContact);
-    Button share = findViewById(R.id.detailShare);
+    Button share = findViewById(R.id.labelIcon);
     Button call = findViewById(R.id.detailCall);
     Button nav = findViewById(R.id.detailNav);
     WebView pano = findViewById(R.id.detailPanorama);
+    LinearLayout labels = findViewById(R.id.detailLabels);
 
     Intent intent = getIntent();
 
@@ -113,8 +108,7 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
       prevAddr.setText(parking.getString("prev_addr"));
       manager.setText(parking.getString("manager"));
       contact.setText(parking.getString("contact"));
-      String number = parking.getString("contact");
-      number.replace("-", "");
+      String number = parking.getString("contact").replace("-", "");
       latLng = new LatLng(parking.getDouble("lat"), parking.getDouble("lng"));
       
       Uri callnumber = Uri.parse("tel:" + number);
@@ -177,58 +171,72 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
     LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
     layoutSeat.setOrientation(LinearLayout.VERTICAL);
     layoutSeat.setLayoutParams(params);
-    layoutSeat.setPadding(8 * seatGaping, 8 * seatGaping, 8 * seatGaping, 8 * seatGaping);
+    layoutSeat.setPadding(0, 8 * seatGaping, 0, 8 * seatGaping);
     layout.addView(layoutSeat);
 
     LinearLayout layout = null;
 
     int count = 0;
+    int blank = 0;
+    for(int i = 0; i < seats.indexOf("/", 1); i++) {
+      if(Character.toString(seats.charAt(i)).equals("_")) blank++;
+    }
+    int weightsum = seats.indexOf("/", 1) - 1;
+      Log.d(TAG, "Weightsum : " + weightsum);
 
     for (int index = 0; index < seats.length(); index++) {
       if (seats.charAt(index) == '/') {
         layout = new LinearLayout(this);
         layout.setOrientation(LinearLayout.HORIZONTAL);
+        layout.setWeightSum(weightsum);
         layoutSeat.addView(layout);
-      } else if (seats.charAt(index) == 'U') {
+      } else if (seats.charAt(index) == 'A') { // 일반 좌석
         count++;
         TextView view = new TextView(this);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(seatWidth, seatHeight);
-        layoutParams.setMargins(seatGaping, seatGaping, seatGaping, seatGaping);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(seatWidth, seatHeight, 1);
         view.setLayoutParams(layoutParams);
-        view.setPadding(0, 0, 0, 2 * seatGaping);
         view.setId(count);
         view.setGravity(Gravity.CENTER);
-        view.setBackgroundResource(R.drawable.activity_detail_badge_primary);
+        view.setBackgroundResource(R.drawable.seat_primary);
+        view.setText(count + "");
+        view.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 9);
         view.setTextColor(Color.WHITE);
-        view.setText(count + "");
-        view.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 9);
         layout.addView(view);
         seatViewList.add(view);
-      } else if (seats.charAt(index) == 'A') {
+      } else if (seats.charAt(index) == 'B') { // 장애인 좌석
         count++;
         TextView view = new TextView(this);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(seatWidth, seatHeight);
-        layoutParams.setMargins(seatGaping, seatGaping, seatGaping, seatGaping);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(seatWidth, seatHeight, 1);
         view.setLayoutParams(layoutParams);
-        view.setPadding(0, 0, 0, 2 * seatGaping);
         view.setId(count);
         view.setGravity(Gravity.CENTER);
-        view.setBackgroundResource(R.drawable.activity_detail_badge_primary);
+        view.setBackgroundResource(R.drawable.seat_disabled);
         view.setText(count + "");
         view.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 9);
-        view.setTextColor(Color.BLACK);
+        view.setTextColor(Color.WHITE);
         layout.addView(view);
         seatViewList.add(view);
-      } else if (seats.charAt(index) == 'R') {
+      } else if (seats.charAt(index) == 'C') { // 여성 좌석
         count++;
         TextView view = new TextView(this);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(seatWidth, seatHeight);
-        layoutParams.setMargins(seatGaping, seatGaping, seatGaping, seatGaping);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(seatWidth, seatHeight, 1);
         view.setLayoutParams(layoutParams);
-        view.setPadding(0, 0, 0, 2 * seatGaping);
         view.setId(count);
         view.setGravity(Gravity.CENTER);
-        view.setBackgroundResource(R.drawable.activity_detail_badge_primary);
+        view.setBackgroundResource(R.drawable.seat_woman);
+        view.setText(count + "");
+        view.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 9);
+        view.setTextColor(Color.WHITE);
+        layout.addView(view);
+        seatViewList.add(view);
+      } else if (seats.charAt(index) == 'N') { // 빈 좌석
+        count++;
+        TextView view = new TextView(this);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(seatWidth, seatHeight, 1);
+        view.setLayoutParams(layoutParams);
+        view.setId(count);
+        view.setGravity(Gravity.CENTER);
+        view.setBackgroundResource(R.drawable.seat_na);
         view.setText(count + "");
         view.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 9);
         view.setTextColor(Color.WHITE);
@@ -236,8 +244,7 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
         seatViewList.add(view);
       } else if (seats.charAt(index) == '_') {
         TextView view = new TextView(this);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(seatWidth, seatHeight);
-        layoutParams.setMargins(seatGaping, seatGaping, seatGaping, seatGaping);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(seatWidth, seatHeight, 1);
         view.setLayoutParams(layoutParams);
         view.setBackgroundColor(Color.TRANSPARENT);
         view.setText("");
@@ -245,7 +252,11 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
       }
     }
 
-    //상단 뱃지 출력
+    /* 결제 정보 라벨 출력 */
+      if (parking.getInt("payment_cash") == 1){
+
+      }
+
     } catch (Exception e) {
       e.printStackTrace();
     }

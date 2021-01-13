@@ -1,31 +1,22 @@
 package com.hanultari.parking.Adapter;
 
 import android.content.Context;
-import android.location.Location;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
-import com.hanultari.parking.AsyncTasks.CommonMethod;
-import com.hanultari.parking.AsyncTasks.SelectMarker;
+import com.hanultari.parking.CommonMethod;
 import com.hanultari.parking.AsyncTasks.SelectParking;
-import com.hanultari.parking.DTO.ParkingDTO;
 import com.hanultari.parking.R;
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.map.overlay.InfoWindow;
-import com.naver.maps.map.overlay.Marker;
-import com.naver.maps.map.overlay.OverlayImage;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
-public class InfoWindowAdapter extends InfoWindow.DefaultViewAdapter{
+public class MarkerInfoWindowAdapter extends InfoWindow.DefaultViewAdapter{
   private static final String TAG = "InfoWindowAdapter";
 
   private final Context context;
@@ -34,7 +25,7 @@ public class InfoWindowAdapter extends InfoWindow.DefaultViewAdapter{
   private final LatLng marker;
   private final LatLng current;
 
-  public InfoWindowAdapter(Context context, ViewGroup parent, String id, LatLng marker, LatLng current) {
+  public MarkerInfoWindowAdapter(Context context, ViewGroup parent, String id, LatLng marker, LatLng current) {
     super(context);
     this.context = context;
     this.parent = parent;
@@ -47,7 +38,7 @@ public class InfoWindowAdapter extends InfoWindow.DefaultViewAdapter{
   @NonNull
   @Override
   protected View getContentView(@NonNull InfoWindow infoWindow) {
-    View view = LayoutInflater.from(context).inflate(R.layout.infowindow, parent, false);
+    View view = LayoutInflater.from(context).inflate(R.layout.infowindow_parking, parent, false);
 
     TextView badge = view.findViewById(R.id.infoWindowBadge);
     TextView distance = view.findViewById(R.id.infoWindowDistance);
@@ -68,7 +59,7 @@ public class InfoWindowAdapter extends InfoWindow.DefaultViewAdapter{
         }
         if(list.getString("paid").equals("false")) {
           badge.setText("무료");
-          badge.setBackgroundResource(R.drawable.activity_detail_badge_primary);
+          badge.setBackgroundResource(R.drawable.label_primary);
         } else {
           badge.setText("유료");
           badge.setBackgroundResource(R.drawable.activity_detail_background);

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="60dp">
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/labelIcon"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginRight="5dp"
+        android:backgroundTint="@color/primary"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
+        app:cornerRadius="40dp"
+        app:icon="@drawable/ic_share"
+        app:iconGravity="textStart"
+        app:iconPadding="@dimen/cardview_default_radius"
+        app:iconSize="30dp"
+        app:iconTint="@android:color/white"
+        app:rippleColor="@color/secondary"
+        app:strokeColor="@color/primary"
+        app:strokeWidth="3dp" />
+
+    <TextView
+        android:id="@+id/labelText"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:fontFamily="@font/robotobold"
+        android:gravity="center_vertical"
+        android:text="현금"
+        android:textSize="14sp" />
+
+
+</LinearLayout>

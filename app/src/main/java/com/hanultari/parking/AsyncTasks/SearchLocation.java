@@ -2,7 +2,7 @@ package com.hanultari.parking.AsyncTasks;
 
 import android.os.AsyncTask;
 
-import org.json.JSONObject;
+import org.json.JSONArray;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -13,17 +13,14 @@ import java.net.URL;
 
 import static com.hanultari.parking.CommonMethod.ipConfig;
 
-public class SelectParking extends AsyncTask<String, Void, JSONObject> {
+public class SearchLocation extends AsyncTask<String, Void, JSONArray> {
 
-  JSONObject object;
-
-
+  JSONArray list;
 
   @Override
-  protected JSONObject doInBackground(String... id) {
+  protected JSONArray doInBackground(String... Strings) {
     try {
-      String postURL = String.format("%s/getSingleParkingData?id=%s", ipConfig, id[0]);
-      URL url = new URL(postURL);
+      URL url = new URL(ipConfig + "/searchLocation?query=" + Strings[0]);
       HttpURLConnection conn = (HttpURLConnection) url.openConnection();
       InputStream is = new BufferedInputStream(conn.getInputStream());
       BufferedReader br = new BufferedReader(new InputStreamReader(is, "UTF-8"));
@@ -36,13 +33,16 @@ public class SelectParking extends AsyncTask<String, Void, JSONObject> {
 
       String result = builder.toString();
 
-      object = new JSONObject(result);
+      list = new JSONArray(result);
+
       conn.disconnect();
       br.close();
       is.close();
-    } catch (Exception e){
+    } catch (Exception e) {
       e.printStackTrace();
     }
-    return object;
+
+
+    return list;
   }
 }

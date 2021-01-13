@@ -29,37 +29,6 @@
                 android:layout_height="214dp"
                 android:layout_marginBottom="10dp" />
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingBottom="10dp">
-
-                <ImageView
-                    android:id="@+id/imageView2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="10dp"
-                    android:layout_marginRight="10dp"
-                    app:srcCompat="@drawable/activity_detail_badge_primary" />
-
-                <ImageView
-                    android:id="@+id/imageView3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="10dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_weight="1"
-                    app:srcCompat="@drawable/activity_detail_badge_primary" />
-
-                <ImageView
-                    android:id="@+id/imageView4"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    app:srcCompat="@drawable/activity_detail_badge_primary" />
-            </LinearLayout>
-
             <TextView
                 android:id="@+id/detailName"
                 android:layout_width="match_parent"
@@ -140,6 +109,13 @@
                 android:layout_height="10dp" />
 
             <LinearLayout
+                android:id="@+id/detailLabels"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:orientation="horizontal"
+                android:weightSum="3"></LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal">
@@ -186,15 +162,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="5dp" />
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:foregroundGravity="center">
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_weight="4"
                     android:baselineAligned="false"
                     android:gravity="center_vertical"
                     android:orientation="vertical"
@@ -223,9 +198,10 @@
                 </LinearLayout>
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/detailShare"
+                    android:id="@+id/labelIcon"
                     android:layout_width="60dp"
                     android:layout_height="60dp"
+                    android:layout_alignParentRight="true"
                     android:backgroundTint="@color/primary"
                     android:insetTop="0dp"
                     android:insetBottom="0dp"
@@ -235,14 +211,11 @@
                     app:iconPadding="@dimen/cardview_default_radius"
                     app:iconSize="30dp"
                     app:iconTint="@android:color/white"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
                     app:rippleColor="@color/secondary"
                     app:strokeColor="@color/primary"
                     app:strokeWidth="3dp" />
 
-            </LinearLayout>
+            </RelativeLayout>
 
             <Space
                 android:layout_width="match_parent"
@@ -270,15 +243,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="5dp" />
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:weightSum="4">
+                android:layout_height="wrap_content">
 
                 <LinearLayout
-                    android:layout_width="304dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_weight="3"
                     android:baselineAligned="false"
                     android:gravity="center_vertical"
                     android:orientation="vertical"
@@ -310,23 +281,21 @@
                     android:id="@+id/detailCall"
                     android:layout_width="60dp"
                     android:layout_height="60dp"
+                    android:layout_alignParentRight="true"
                     android:backgroundTint="@color/primary"
                     android:insetTop="0dp"
                     android:insetBottom="0dp"
                     app:cornerRadius="40dp"
-                    app:icon="@android:drawable/ic_menu_call"
+                    app:icon="@drawable/ic_phone"
                     app:iconGravity="textStart"
                     app:iconPadding="@dimen/cardview_default_radius"
                     app:iconSize="30dp"
-                    app:iconTint="@color/white"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
+                    app:iconTint="@android:color/white"
                     app:rippleColor="@color/secondary"
                     app:strokeColor="@color/primary"
                     app:strokeWidth="3dp" />
 
-            </LinearLayout>
+            </RelativeLayout>
 
             <Space
                 android:layout_width="match_parent"
@@ -349,7 +318,7 @@
             android:id="@+id/detailNav"
             android:layout_width="318dp"
             android:layout_height="wrap_content"
-            android:text="Button" />
+            android:text="길 안내 시작" />
     </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

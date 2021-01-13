@@ -1,4 +1,4 @@
-package com.hanultari.parking.AsyncTasks;
+package com.hanultari.parking;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -32,6 +32,7 @@ public class CommonMethod {
 
   }
 
+  /* 두 지점의 거리를 m 단위로 출력 */
   public static double getDistance(LatLng current, LatLng target){
     double currentLat = current.latitude;
     double currentLng = current.longitude;
@@ -47,7 +48,7 @@ public class CommonMethod {
     dist = Math.acos(dist);
     dist = rad2deg(dist);
     dist = dist * 60 * 1.1515 / 0.62137;
-    return (dist);
+    return Math.round(dist * 1000);
   }
 
   public static double deg2rad(double deg) {

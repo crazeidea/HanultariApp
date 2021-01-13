@@ -2,9 +2,6 @@ package com.hanultari.parking.AsyncTasks;
 
 import android.os.AsyncTask;
 
-import com.google.gson.JsonArray;
-import com.hanultari.parking.DTO.LatlngDTO;
-
 import org.json.JSONArray;
 
 import java.io.BufferedInputStream;
@@ -13,9 +10,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
 
-import static com.hanultari.parking.AsyncTasks.CommonMethod.ipConfig;
+import static com.hanultari.parking.CommonMethod.ipConfig;
 
 public class SelectMarker extends AsyncTask<Void, Void, JSONArray> {
 
