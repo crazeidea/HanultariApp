@@ -27,7 +27,6 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
-
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -35,11 +34,11 @@ import com.google.android.material.navigation.NavigationView;
 import com.hanultari.parking.Activities.DetailActivity;
 import com.hanultari.parking.Activities.SearchActivity;
 import com.hanultari.parking.Activities.SettingActivity;
+import com.hanultari.parking.Adapter.LocateNearRecyclerViewAdapter;
 import com.hanultari.parking.Adapter.MarkerInfoWindowAdapter;
 import com.hanultari.parking.Adapter.PlaceInfoWindowAdapter;
 import com.hanultari.parking.AsyncTasks.SelectMarker;
 import com.hanultari.parking.AsyncTasks.SelectParking;
-import com.hanultari.parking.DTO.LocateNearRecyclerViewAdapter;
 import com.hanultari.parking.DTO.ParkingDTO;
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.map.CameraAnimation;
@@ -56,12 +55,13 @@ import com.naver.maps.map.overlay.OverlayImage;
 import com.naver.maps.map.util.FusedLocationSource;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Locale;
-import java.util.concurrent.ExecutionException;
 
 import static com.hanultari.parking.CommonMethod.getDistance;
 
@@ -77,7 +77,12 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
   public static NaverMap naverMap;
 
   /* 전역 변수 */
-  public LatLng currentLocation;
+  public LatLng currentLatLng;
+  public RecyclerView mainRecycler;
+  public InfoWindow parkingInfo;
+  public Marker parkingMarker;
+  public InfoWindow placeInfo;
+  public Marker placeMarker;
 
   @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
   @Override
@@ -105,6 +110,10 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
     /* 실시간 위치 정보 수신 */
     locationSource = new FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE);
+
+    LocationManager lm = (LocationManager) getSystemService(Service.LOCATION_SERVICE);
+    @SuppressLint("MissingPermission") Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+    currentLatLng = new LatLng(location.getLatitude(), location.getLongitude());
 
     /* 상단 Toolbar */
     ImageView menu = findViewById(R.id.mainMenuImage);
@@ -172,23 +181,22 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
           marker.setOnClickListener(new Overlay.OnClickListener() {
             @Override
             public boolean onClick(@NonNull Overlay overlay) {
-              currentLocation = new LatLng(locationSource.getLastLocation().getLatitude(), locationSource.getLastLocation().getLongitude());
               LatLng markerLocation = new LatLng(marker.getPosition().latitude, marker.getPosition().longitude);
               CameraPosition cameraPosition = new CameraPosition(markerLocation, 16);
               CameraUpdate cameraUpdate = CameraUpdate.toCameraPosition(cameraPosition);
               naverMap.moveCamera(cameraUpdate);
               ViewGroup rootView = findViewById(R.id.mainmap);
-              infoWindow.setAdapter(new MarkerInfoWindowAdapter(MainActivity.this, rootView, marker.getTag().toString(), currentLocation, markerLocation));
+              infoWindow.setAdapter(new MarkerInfoWindowAdapter(MainActivity.this, rootView, (Integer) marker.getTag(), currentLatLng, markerLocation));
               infoWindow.open(marker);
               infoWindow.setOnClickListener(new Overlay.OnClickListener() {
                 @Override
                 public boolean onClick(@NonNull Overlay overlay) {
                   Intent intent = new Intent(MainActivity.this, DetailActivity.class);
                   intent.putExtra("id", marker.getTag().toString());
-                  intent.putExtra("currentLocation", currentLocation);
+                  intent.putExtra("currentLocation", currentLatLng);
                   SelectParking selectParking = new SelectParking();
                   try {
-                    intent.putExtra("markerName", selectParking.execute(marker.getTag().toString()).get().toString());
+                    intent.putExtra("markerName", selectParking.execute(Integer.valueOf(marker.getTag().toString())).get().toString());
                   } catch (Exception e) {
                     e.printStackTrace();
                   }
@@ -240,7 +248,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
       }
     });
 
-
+    /* 내 위치로 이동 버튼 클릭 이벤트 */
     Button btnLocateHere = findViewById(R.id.btnLocateHere);
     btnLocateHere.setOnClickListener(new View.OnClickListener() {
       @Override
@@ -255,6 +263,64 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
       }
     }); //btnLocateHere.onclick
+
+    /* 주변 주차장 찾기 버튼 클릭 이벤트 */
+    Button btnLocateNear = findViewById(R.id.btnLocateNear);
+    btnLocateNear.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        ArrayList<ParkingDTO> array = new ArrayList<>();
+        try {
+          SelectMarker sm = new SelectMarker();
+          JSONArray list = sm.execute().get();
+          for (int i = 0; i < list.length(); i++) {
+            JSONObject object = list.getJSONObject(i);
+            double distance = getDistance(currentLatLng, new LatLng(object.getDouble("lat"), object.getDouble("lng")));
+            if (distance < 1000) {
+              ParkingDTO dto = new ParkingDTO();
+              try {
+                int id = object.getInt("id");
+                SelectParking sp = new SelectParking();
+                JSONObject parking = sp.execute(id).get();
+                dto.setName(parking.getString("name"));
+                dto.setFare(parking.getInt("fare"));
+                dto.setPaid(parking.getBoolean("paid"));
+                dto.setDistance(String.valueOf(distance));
+                array.add(dto);
+                Collections.sort(array, new Comparator<ParkingDTO>() {
+                  @Override
+                  public int compare(ParkingDTO o1, ParkingDTO o2) {
+                    return o1.getDistance().compareTo(o2.getDistance());
+                  }
+                });
+              } catch (Exception e) {
+                e.printStackTrace();
+              }
+            }
+          }
+        } catch (Exception e) {
+          e.printStackTrace();
+        } finally {
+          mainRecycler = findViewById(R.id.mainRecyclerView);
+          mainRecycler.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+          LocateNearRecyclerViewAdapter adapter = new LocateNearRecyclerViewAdapter(getApplicationContext(), array);
+          mainRecycler.setAdapter(adapter);
+          if(mainRecycler.getVisibility() == View.GONE) {
+            mainRecycler.setVisibility(View.VISIBLE);
+          } else if (mainRecycler.getVisibility() == View.VISIBLE) {
+            mainRecycler.setVisibility(View.GONE);
+          }
+        }
+      }
+    }); // btnLocateNear Click
+
+    mainRecycler = findViewById(R.id.mainRecyclerView);
+    mainRecycler.setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
+      @Override
+      public void onSystemUiVisibilityChange(int visibility) {
+        Log.d(TAG, "onSystemUiVisibilityChange: " + visibility);
+      }
+    });
 
     /* 위치 변경에 따른 카메라 이동
     naverMap.addOnLocationChangeListener(new NaverMap.OnLocationChangeListener() {
@@ -282,50 +348,86 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         CameraPosition placePosition = new CameraPosition(latlng, 16);
         CameraUpdate cameraUpdate = CameraUpdate.toCameraPosition(placePosition).animate(CameraAnimation.Fly);
         naverMap.moveCamera(cameraUpdate);
-        Marker placeMarker = new Marker();
+        placeMarker = new Marker();
         placeMarker.setPosition(latlng);
         placeMarker.setMap(naverMap);
-        InfoWindow placeInfo = new InfoWindow();
+        placeInfo = new InfoWindow();
         ViewGroup rootView = findViewById(R.id.mainmap);
         placeInfo.setAdapter(new PlaceInfoWindowAdapter(MainActivity.this, rootView, address));
         placeInfo.open(placeMarker);
         placeInfo.setOnClickListener(new Overlay.OnClickListener() {
           @Override
           public boolean onClick(@NonNull Overlay overlay) {
-            Log.d(TAG, "Place InfoWindow Clicked");
-            ArrayList<ParkingDTO> dtos = null;
+            ArrayList<ParkingDTO> array = new ArrayList<>();
             try {
-              LocationManager lm = (LocationManager) getSystemService(Service.LOCATION_SERVICE);
-              @SuppressLint("MissingPermission") Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-              LatLng currentLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-
               SelectMarker sm = new SelectMarker();
-              JSONArray array = sm.execute().get();
-              dtos = new ArrayList<>();
-              for (int i = 0; i < array.length(); i++) {
-                JSONObject object = (JSONObject) array.get(i);
+              JSONArray markers = sm.execute().get();
+              for (int i = 0; i < markers.length(); i++) {
+                JSONObject object = markers.getJSONObject(i);
                 double distance = getDistance(latlng, new LatLng(object.getDouble("lat"), object.getDouble("lng")));
                 if (distance < 1000) {
                   ParkingDTO dto = new ParkingDTO();
-                  //TODO 주차장 정보 수신
-                  dto.setName("test");
-                  dto.setFare(1);
-                  dto.setDistance(String.valueOf(distance));
-                  dtos.add(dto);
+                  try {
+                    int id = object.getInt("id");
+                    SelectParking sp = new SelectParking();
+                    JSONObject parking = sp.execute(id).get();
+                    dto.setName(parking.getString("name"));
+                    dto.setFare(parking.getInt("fare"));
+                    dto.setPaid(parking.getBoolean("paid"));
+                    dto.setDistance(String.valueOf(distance));
+                    array.add(dto);
+                    Collections.sort(array, new Comparator<ParkingDTO>() {
+                      @Override
+                      public int compare(ParkingDTO o1, ParkingDTO o2) {
+                        return o1.getDistance().compareTo(o2.getDistance());
+                      }
+                    });
+                  } catch (Exception e) {
+                    e.printStackTrace();
+                  }
                 }
               }
-
             } catch (Exception e) {
               e.printStackTrace();
             } finally {
-              RecyclerView recyclerView = findViewById(R.id.mainRecyclerView);
-              recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-              LocateNearRecyclerViewAdapter adapter = new LocateNearRecyclerViewAdapter(getApplicationContext(), dtos);
-              recyclerView.setAdapter(adapter);
-              recyclerView.setVisibility(View.VISIBLE);
-
-              return false;
+              mainRecycler = findViewById(R.id.mainRecyclerView);
+              mainRecycler.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+              LocateNearRecyclerViewAdapter adapter = new LocateNearRecyclerViewAdapter(getApplicationContext(), array);
+              mainRecycler.setAdapter(adapter);
+              if(mainRecycler.getVisibility() == View.GONE) {
+                mainRecycler.setVisibility(View.VISIBLE);
+              } else if (mainRecycler.getVisibility() == View.VISIBLE) {
+                mainRecycler.setVisibility(View.GONE);
+              }
             }
+            return true;
+          }
+        });
+      } else if (getIntent().getStringExtra("type").equals("parking")) {
+        CameraPosition parkingPosition = new CameraPosition(latlng, 16);
+        CameraUpdate cameraUpdate = CameraUpdate.toCameraPosition(parkingPosition).animate(CameraAnimation.Fly);
+        naverMap.moveCamera(cameraUpdate);
+        parkingMarker = new Marker();
+        parkingMarker.setPosition(latlng);
+        parkingMarker.setMap(naverMap);
+        parkingInfo = new InfoWindow();
+        ViewGroup rootView = findViewById(R.id.mainmap);
+        parkingInfo.setAdapter(new MarkerInfoWindowAdapter(this, rootView, Integer.parseInt(address), latlng, currentLatLng));
+        parkingInfo.open(parkingMarker);
+        parkingInfo.setOnClickListener(new Overlay.OnClickListener() {
+          @Override
+          public boolean onClick(@NonNull Overlay overlay) {
+            Intent intent = new Intent(MainActivity.this, DetailActivity.class);
+            intent.putExtra("id", address);
+            intent.putExtra("currentLocation", currentLatLng);
+            SelectParking sp = new SelectParking();
+            try {
+              intent.putExtra("markerName", sp.execute(Integer.valueOf(address)).get().toString());
+            } catch (Exception e) {
+              e.printStackTrace();
+            }
+            startActivity(intent);
+            return false;
           }
         });
       }
@@ -344,12 +446,26 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
       }
 
       /* 사이드바 뒤로가기 처리 */
+      private long time = 0;
       @Override public void onBackPressed () {
         DrawerLayout mainDrawerLayout = findViewById(R.id.mainDrawerLayout);
         if (mainDrawerLayout.isDrawerOpen(GravityCompat.START)) {
           mainDrawerLayout.closeDrawer(GravityCompat.START);
+        } else if (mainRecycler.getVisibility() == View.VISIBLE) {
+          mainRecycler.setVisibility(View.GONE);
+        } else if (placeInfo != null) {
+          placeMarker.setMap(null);
+          placeInfo = null;
+        } else if (parkingInfo != null) {
+          parkingMarker.setMap(null);
+          parkingInfo = null;
         } else {
-          super.onBackPressed();
+          if(System.currentTimeMillis() - time >= 2000) {
+            time = System.currentTimeMillis();
+            Toast.makeText(this, "뒤로가기 버튼을 한번 더 누르면 종료합니다.", Toast.LENGTH_SHORT).show();
+          } else if(System.currentTimeMillis() - time <= 2000) {
+            finish();
+          }
         }
       }
 

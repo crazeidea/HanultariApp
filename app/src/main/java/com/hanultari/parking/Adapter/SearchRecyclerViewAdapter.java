@@ -83,7 +83,7 @@ public class SearchRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
 
     private void setParkingDetail(ParkingDTO dto) {
       parkingLotName.setText(dto.getName());
-      if(dto.getPaid() == 0){
+      if(!dto.getPaid()){
         parkingLotFare.setText("이용요금 무료");
       } else {
         parkingLotFare.setText(dto.getFare() + " / " + dto.getAdded_fare());
@@ -163,7 +163,7 @@ public class SearchRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
       holder.itemView.setTag(R.string.ITEM_TYPE, "parking");
       holder.itemView.setTag(R.string.ITEM_LAT, parkings.get(position - places.size()).getLat());
       holder.itemView.setTag(R.string.ITEM_LNG, parkings.get(position - places.size()).getLng());
-      holder.itemView.setTag(R.string.ITEM_TITLE, parkings.get(position - places.size()).getId());
+      holder.itemView.setTag(R.string.ITEM_TITLE, String.valueOf(parkings.get(position - places.size()).getId()));
     }
   }
 }

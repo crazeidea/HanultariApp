@@ -24,6 +24,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 
 import com.hanultari.parking.AsyncTasks.SelectParking;
+import com.hanultari.parking.Custom.CustomScrollView;
 import com.hanultari.parking.R;
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.map.CameraPosition;
@@ -55,7 +56,7 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
     setContentView(R.layout.activity_detail);
 
     /* 레이아웃 관련 변수 */
-    com.hanultari.parking.Custom.CustomScrollView scrollView = findViewById(R.id.detailScrollView);
+    CustomScrollView scrollView = findViewById(R.id.detailScrollView);
     TextView name = findViewById(R.id.detailName);
     TextView status = findViewById(R.id.detailCurrent);
     TextView fare = findViewById(R.id.detailFare);
@@ -97,7 +98,7 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
     SelectParking selectParking = new SelectParking();
     LatLng currentLocation = intent.getParcelableExtra("currentLocation");
     try {
-      JSONObject parking = selectParking.execute(intent.getStringExtra("id")).get();
+      JSONObject parking = selectParking.execute(Integer.valueOf(intent.getStringExtra("id"))).get();
 
       name.setText(parking.getString("name"));
       status.setText("현재 " + (parking.getInt("total") - parking.getInt("parked")) + "자리 남아있어요.");

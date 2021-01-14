@@ -13,14 +13,14 @@ import java.net.URL;
 
 import static com.hanultari.parking.CommonMethod.ipConfig;
 
-public class SelectParking extends AsyncTask<String, Void, JSONObject> {
+public class SelectParking extends AsyncTask<Integer, Void, JSONObject> {
 
   JSONObject object;
 
 
 
   @Override
-  protected JSONObject doInBackground(String... id) {
+  protected JSONObject doInBackground(Integer... id) {
     try {
       String postURL = String.format("%s/getSingleParkingData?id=%s", ipConfig, id[0]);
       URL url = new URL(postURL);

@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -51,6 +52,9 @@ public class SearchActivity extends AppCompatActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_search);
 
+    TextView searchTitle = findViewById(R.id.searchTitle);
+    searchTitle.setVisibility(View.GONE);
+
     LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
     if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
       // TODO: Consider calling
@@ -72,7 +76,12 @@ public class SearchActivity extends AppCompatActivity {
       @Override
       public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
         if(actionId == EditorInfo.IME_ACTION_SEARCH) {
-          Log.d(TAG, "onEditorAction: Search Executed");
+
+          InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+          imm.hideSoftInputFromWindow(searchEditText.getWindowToken(), 0);
+
+          TextView searchTitle = findViewById(R.id.searchTitle);
+          searchTitle.setVisibility(View.VISIBLE);
           String query = searchEditText.getText().toString();
           SearchLocation searchLocation = new SearchLocation();
           SearchParking searchParking = new SearchParking();

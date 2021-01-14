@@ -33,7 +33,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:elevation="4dp">
+                android:elevation="4dp"
+                tools:targetApi="lollipop">
 
                 <ImageView
                     android:id="@+id/mainMenuImage"
@@ -117,7 +118,7 @@
                     android:layout_marginBottom="8dp"
                     android:background="#FFFFFF"
                     android:padding="20dp"
-                    android:visibility="gone"
+                    android:visibility="visible"
                     app:layout_constraintBottom_toTopOf="@+id/btnLocateNear"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"

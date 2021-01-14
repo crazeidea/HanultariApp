@@ -1,13 +1,14 @@
 package com.hanultari.parking.DTO;
 
-public class ParkingDTO {
+public class ParkingDTO implements Comparable<ParkingDTO> {
   private String  name, addr, prev_addr, manager, contact, oper_mon, oper_tue, oper_wed, oper_thu, oper_fri, oper_sat, oper_sun, start_time, end_time, payment_cash, payment_card, payment_machine, layout, indoor, smallcar, woman, disabled,  distance;
   private float lat, lng;
-  private int id, parked, total, paid, fare, added_fare, duration, duration_interval;
+  private int id, parked, total, fare, added_fare, duration, duration_interval;
+  private boolean paid;
 
   public ParkingDTO() {}
 
-  public ParkingDTO(int id, String name, String addr, String prev_addr, String manager, String contact, String oper_mon, String oper_tue, String oper_wed, String oper_thu, String oper_fri, String oper_sat, String oper_sun, String start_time, String end_time, String payment_cash, String payment_card, String payment_machine, String layout, String indoor, String smallcar, String woman, String disabled, int paid, String distance, float lat, float lng, int parked, int total, int fare, int added_fare, int duration, int duration_interval) {
+  public ParkingDTO(int id, String name, String addr, String prev_addr, String manager, String contact, String oper_mon, String oper_tue, String oper_wed, String oper_thu, String oper_fri, String oper_sat, String oper_sun, String start_time, String end_time, String payment_cash, String payment_card, String payment_machine, String layout, String indoor, String smallcar, String woman, String disabled, boolean paid, String distance, float lat, float lng, int parked, int total, int fare, int added_fare, int duration, int duration_interval) {
     this.id = id;
     this.name = name;
     this.addr = addr;
@@ -227,11 +228,11 @@ public class ParkingDTO {
     this.disabled = disabled;
   }
 
-  public int getPaid() {
+  public boolean getPaid() {
     return paid;
   }
 
-  public void setPaid(int paid) {
+  public void setPaid(boolean paid) {
     this.paid = paid;
   }
 
@@ -305,5 +306,10 @@ public class ParkingDTO {
 
   public void setDuration_interval(int duration_interval) {
     this.duration_interval = duration_interval;
+  }
+
+  @Override
+  public int compareTo(ParkingDTO o) {
+    return 0;
   }
 }

@@ -21,11 +21,11 @@ public class MarkerInfoWindowAdapter extends InfoWindow.DefaultViewAdapter{
 
   private final Context context;
   private final ViewGroup parent;
-  private final String id;
+  private final int id;
   private final LatLng marker;
   private final LatLng current;
 
-  public MarkerInfoWindowAdapter(Context context, ViewGroup parent, String id, LatLng marker, LatLng current) {
+  public MarkerInfoWindowAdapter(Context context, ViewGroup parent, int id, LatLng marker, LatLng current) {
     super(context);
     this.context = context;
     this.parent = parent;

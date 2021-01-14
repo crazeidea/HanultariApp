@@ -15,14 +15,14 @@ import com.hanultari.parking.R;
 
 import java.util.ArrayList;
 
-public class LocateNearRecyclerViewAdapter extends RecyclerView.Adapter<LocateNearRecyclerViewAdapter.ViewHolder> {
+public class LocatePlaceNearRecyclerViewAdapter extends RecyclerView.Adapter<LocatePlaceNearRecyclerViewAdapter.ViewHolder> {
 
   private final Context context;
   private final ArrayList<ParkingDTO> dtos;
   private OnItemClickListener listener = null;
 
 
-  public LocateNearRecyclerViewAdapter(Context context, ArrayList<ParkingDTO> dtos) {
+  public LocatePlaceNearRecyclerViewAdapter(Context context, ArrayList<ParkingDTO> dtos) {
     this.context = context;
     this.dtos = dtos;
   }
@@ -53,13 +53,13 @@ public class LocateNearRecyclerViewAdapter extends RecyclerView.Adapter<LocateNe
 
   @NonNull
   @Override
-  public LocateNearRecyclerViewAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+  public LocatePlaceNearRecyclerViewAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
     View view = LayoutInflater.from(context).inflate(R.layout.search_item_parking_detail, parent, false);
     return new ViewHolder(view);
   }
 
   @Override
-  public void onBindViewHolder(@NonNull LocateNearRecyclerViewAdapter.ViewHolder holder, int position) {
+  public void onBindViewHolder(@NonNull LocatePlaceNearRecyclerViewAdapter.ViewHolder holder, int position) {
     String name = dtos.get(position).getName();
     int fare = dtos.get(position).getFare();
     String distance = dtos.get(position).getDistance();
