@@ -1,8 +1,10 @@
 package com.hanultari.parking;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Service;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.PointF;
 import android.location.Location;
 import android.location.LocationManager;
@@ -23,6 +25,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.annotation.UiThread;
+import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentActivity;
@@ -32,6 +35,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.navigation.NavigationView;
 import com.hanultari.parking.Activities.DetailActivity;
+import com.hanultari.parking.Activities.FavoriteActivity;
 import com.hanultari.parking.Activities.SearchActivity;
 import com.hanultari.parking.Activities.SettingActivity;
 import com.hanultari.parking.Adapter.LocateNearRecyclerViewAdapter;
@@ -91,13 +95,34 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     super.onCreate(savedInstanceState);
     try {
       setContentView(R.layout.activity_main);
-    } catch (Exception e) {
+    } catch (Exception e){
       e.printStackTrace();
     }
+
 
     /*레이아웃 관련 변수 */
     DrawerLayout mainDrawerLayout = findViewById(R.id.mainDrawerLayout);
     NavigationView navigationView = findViewById(R.id.mainNavigationView);
+
+    /* Navigation Drawer */
+    navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+      @Override
+      public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        item.setChecked(false);
+        mainDrawerLayout.close();
+
+        int id = item.getItemId();
+
+        if (id == R.id.navSetting) {
+          Intent intent = new Intent(getApplicationContext(), SettingActivity.class);
+          startActivity(intent);
+        } else if (id == R.id.navFavorite) {
+          Intent intent = new Intent(getApplicationContext(), FavoriteActivity.class);
+          startActivity(intent);
+        }
+        return false;
+      }
+    });
 
     /* 네이버 지도 Fragment 실행 */
     FragmentManager fm = getSupportFragmentManager();
@@ -112,7 +137,17 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     locationSource = new FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE);
 
     LocationManager lm = (LocationManager) getSystemService(Service.LOCATION_SERVICE);
-    @SuppressLint("MissingPermission") Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+      // TODO: Consider calling
+      //    ActivityCompat#requestPermissions
+      // here to request the missing permissions, and then overriding
+      //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+      //                                          int[] grantResults)
+      // to handle the case where the user grants the permission. See the documentation
+      // for ActivityCompat#requestPermissions for more details.
+      return;
+    }
+    Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
     currentLatLng = new LatLng(location.getLatitude(), location.getLongitude());
 
     /* 상단 Toolbar */
@@ -141,6 +176,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         startActivity(intent);
       }
     });
+
   } // onCreate()
 
 

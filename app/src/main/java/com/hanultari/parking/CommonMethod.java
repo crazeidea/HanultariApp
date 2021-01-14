@@ -5,11 +5,14 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
 
+import com.hanultari.parking.DTO.LoginDTO;
 import com.naver.maps.geometry.LatLng;
 
 public class CommonMethod {
 
   public static String  ipConfig = "http://192.168.0.113:8080";
+
+  public static LoginDTO loginDTO = null;
 
 
   // 네트워크에 연결되어 있는가
