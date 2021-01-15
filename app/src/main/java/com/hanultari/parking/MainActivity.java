@@ -12,6 +12,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,8 +38,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.navigation.NavigationView;
 import com.hanultari.parking.Activities.DetailActivity;
 import com.hanultari.parking.Activities.FavoriteActivity;
+import com.hanultari.parking.Activities.LoginActivity;
 import com.hanultari.parking.Activities.SearchActivity;
 import com.hanultari.parking.Activities.SettingActivity;
+import com.hanultari.parking.Activities.SignupActivity;
 import com.hanultari.parking.Adapter.LocateNearRecyclerViewAdapter;
 import com.hanultari.parking.Adapter.MarkerInfoWindowAdapter;
 import com.hanultari.parking.Adapter.PlaceInfoWindowAdapter;
@@ -68,9 +72,10 @@ import java.util.Comparator;
 import java.util.Locale;
 
 import static com.hanultari.parking.CommonMethod.getDistance;
+import static com.hanultari.parking.CommonMethod.loginDTO;
 
 
-public class MainActivity extends FragmentActivity implements OnMapReadyCallback, NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends FragmentActivity implements OnMapReadyCallback {
   private static final String TAG = "MainActivity";
 
   /* 레이아웃 관련 변수 */ RecyclerView recyclerView;
@@ -88,10 +93,11 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
   public InfoWindow placeInfo;
   public Marker placeMarker;
 
+
+
   @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
   @Override
   public void onCreate(Bundle savedInstanceState) {
-
     super.onCreate(savedInstanceState);
     try {
       setContentView(R.layout.activity_main);
@@ -99,30 +105,13 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
       e.printStackTrace();
     }
 
+    invalidateOptionsMenu();
+
+    Log.d(TAG, "onCreate: LoginDTO = " + loginDTO);
 
     /*레이아웃 관련 변수 */
     DrawerLayout mainDrawerLayout = findViewById(R.id.mainDrawerLayout);
     NavigationView navigationView = findViewById(R.id.mainNavigationView);
-
-    /* Navigation Drawer */
-    navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-      @Override
-      public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        item.setChecked(false);
-        mainDrawerLayout.close();
-
-        int id = item.getItemId();
-
-        if (id == R.id.navSetting) {
-          Intent intent = new Intent(getApplicationContext(), SettingActivity.class);
-          startActivity(intent);
-        } else if (id == R.id.navFavorite) {
-          Intent intent = new Intent(getApplicationContext(), FavoriteActivity.class);
-          startActivity(intent);
-        }
-        return false;
-      }
-    });
 
     /* 네이버 지도 Fragment 실행 */
     FragmentManager fm = getSupportFragmentManager();
@@ -132,6 +121,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
       fm.beginTransaction().add(R.id.mainmap, mapFragment).commit();
     }
     mapFragment.getMapAsync(this);
+
+
 
     /* 실시간 위치 정보 수신 */
     locationSource = new FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE);
@@ -177,7 +168,27 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
       }
     });
 
+    /* Navigation Drawer에 Listener 부착 */
+    navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+      @Override
+      public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+          case R.id.navSetting : startActivity(new Intent(MainActivity.this, SettingActivity.class)); break;
+          case R.id.navLogin : startActivity(new Intent(MainActivity.this, LoginActivity.class)); break;
+          case R.id.navFavorite : startActivity(new Intent(MainActivity.this, FavoriteActivity.class)); break;
+          case R.id.navSignup : startActivity(new Intent(MainActivity.this, SignupActivity.class)); break;
+          //TODO
+        }
+        return true;
+      }
+    });
+
+
+
   } // onCreate()
+
+
 
 
   @UiThread
@@ -227,6 +238,11 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
               infoWindow.setOnClickListener(new Overlay.OnClickListener() {
                 @Override
                 public boolean onClick(@NonNull Overlay overlay) {
+                  placeMarker.setMap(null);
+                  placeInfo.setMap(null);
+                  parkingMarker.setMap(null);
+                  parkingInfo.setMap(null);
+
                   Intent intent = new Intent(MainActivity.this, DetailActivity.class);
                   intent.putExtra("id", marker.getTag().toString());
                   intent.putExtra("currentLocation", currentLatLng);
@@ -321,12 +337,12 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 dto.setName(parking.getString("name"));
                 dto.setFare(parking.getInt("fare"));
                 dto.setPaid(parking.getBoolean("paid"));
-                dto.setDistance(String.valueOf(distance));
+                dto.setDistance((int) distance);
                 array.add(dto);
                 Collections.sort(array, new Comparator<ParkingDTO>() {
                   @Override
                   public int compare(ParkingDTO o1, ParkingDTO o2) {
-                    return o1.getDistance().compareTo(o2.getDistance());
+                    return o1.getDistance() - o2.getDistance();
                   }
                 });
               } catch (Exception e) {
@@ -410,12 +426,12 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                     dto.setName(parking.getString("name"));
                     dto.setFare(parking.getInt("fare"));
                     dto.setPaid(parking.getBoolean("paid"));
-                    dto.setDistance(String.valueOf(distance));
+                    dto.setDistance((int) distance);
                     array.add(dto);
                     Collections.sort(array, new Comparator<ParkingDTO>() {
                       @Override
                       public int compare(ParkingDTO o1, ParkingDTO o2) {
-                        return o1.getDistance().compareTo(o2.getDistance());
+                        return o1.getDistance() - o2.getDistance();
                       }
                     });
                   } catch (Exception e) {
@@ -470,16 +486,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     }
   }// onMapReady()
 
-      @Override public boolean onNavigationItemSelected (@NonNull MenuItem item){
-        int id = item.getItemId();
-
-        if (id == R.id.navSetting) {
-          Intent intent = new Intent(MainActivity.this, SettingActivity.class);
-          startActivity(intent);
-        }
-
-        return true;
-      }
 
       /* 사이드바 뒤로가기 처리 */
       private long time = 0;
@@ -516,5 +522,21 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
       }
 
+
+  @Override
+  public boolean onPrepareOptionsMenu(Menu menu) {
+    if(loginDTO == null) {
+      menu.findItem(R.id.navLogout).setVisible(false);
+    } else {
+      menu.findItem(R.id.navLogin).setVisible(false);
+      menu.findItem(R.id.navSignup).setVisible(false);
     }
+    super.onPrepareOptionsMenu(menu);
+    return true;
+  }
+
+
+
+
+}
 

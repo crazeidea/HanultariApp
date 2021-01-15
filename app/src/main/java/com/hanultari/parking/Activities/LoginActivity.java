@@ -1,15 +1,18 @@
 package com.hanultari.parking.Activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.hanultari.parking.AsyncTasks.Login;
-import com.hanultari.parking.Custom.AES256Chiper;
+import com.hanultari.parking.DTO.MemberDTO;
+import com.hanultari.parking.MainActivity;
 import com.hanultari.parking.R;
 
 import org.json.JSONObject;
@@ -37,7 +40,9 @@ public class LoginActivity extends AppCompatActivity {
         String pwinfo = pw.getText().toString();
         boolean isLogin = executeLogin(emailinfo, pwinfo);
         if(isLogin) {
-
+          startActivity(new Intent(LoginActivity.this, MainActivity.class));
+        } else {
+          Toast.makeText(LoginActivity.this, "올바르지 않은 계정입니다.", Toast.LENGTH_SHORT).show();
         }
       }
     });
@@ -51,13 +56,15 @@ public class LoginActivity extends AppCompatActivity {
     try {
       Login login = new Login();
       JSONObject object = login.execute(info).get();
-      if(object.length() > 0) {
+      if(object != null) {
+        loginDTO = new MemberDTO();
+        loginDTO.setId(object.getInt("id"));
         loginDTO.setEmail(object.getString("email"));
-        loginDTO.setPw(AES256Chiper.AES_Encode(object.getString("pw")));
+        loginDTO.setPw(object.getString("pw"));
         loginDTO.setName(object.getString("name"));
         loginDTO.setNickname(object.getString("nickname"));
         loginDTO.setTel(object.getString("tel"));
-        loginDTO.setAdmin(object.getBoolean("admin"));
+        loginDTO.setAdmin(object.getString("admin").equals("y"));
         loginSuccess = true;
       }
     } catch (Exception e) {

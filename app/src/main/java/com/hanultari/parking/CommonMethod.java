@@ -6,13 +6,14 @@ import android.net.NetworkInfo;
 import android.util.Log;
 
 import com.hanultari.parking.DTO.LoginDTO;
+import com.hanultari.parking.DTO.MemberDTO;
 import com.naver.maps.geometry.LatLng;
 
 public class CommonMethod {
 
   public static String  ipConfig = "http://192.168.0.113:8080";
 
-  public static LoginDTO loginDTO = null;
+  public static MemberDTO loginDTO = null;
 
 
   // 네트워크에 연결되어 있는가
@@ -51,7 +52,7 @@ public class CommonMethod {
     dist = Math.acos(dist);
     dist = rad2deg(dist);
     dist = dist * 60 * 1.1515 / 0.62137;
-    return Math.round(dist * 1000);
+    return dist;
   }
 
   public static double deg2rad(double deg) {

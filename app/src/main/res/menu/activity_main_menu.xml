@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <group
+        android:id="@+id/navGroupLogined"
+        android:enabled="true">
+        <item
+            android:id="@+id/navLogout"
+            android:title="로그아웃" />
+    </group>
+    <group android:id="@+id/navGroupNotLogined">
+        <item
+            android:id="@+id/navLogin"
+            android:title="로그인" />
+        <item
+            android:id="@+id/navSignup"
+            android:title="회원가입" />
+    </group>
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/navFavorite"

@@ -141,5 +141,5 @@
         app:headerLayout="@layout/menu_layout"
         app:itemIconTint="@color/gray"
         app:itemTextColor="@color/gray"
-        app:menu="@menu/activity_main_drawer" />
+        app:menu="@menu/activity_main_menu" />
 </androidx.drawerlayout.widget.DrawerLayout>

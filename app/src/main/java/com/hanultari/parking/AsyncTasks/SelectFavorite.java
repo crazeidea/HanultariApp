@@ -1,7 +1,9 @@
 package com.hanultari.parking.AsyncTasks;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
@@ -13,16 +15,18 @@ import java.net.URL;
 
 import static com.hanultari.parking.CommonMethod.ipConfig;
 
-public class SelectFavorite extends AsyncTask<Integer, Void, JSONObject> {
+public class SelectFavorite extends AsyncTask<Integer, Void, JSONArray> {
+  private static final String TAG = "SelectFavorite";
 
-  JSONObject object;
+  JSONArray array;
 
 
 
   @Override
-  protected JSONObject doInBackground(Integer... id) {
+  protected JSONArray doInBackground(Integer... id) {
     try {
       String postURL = String.format("%s/getFavorite?id=%s", ipConfig, id[0]);
+      Log.d(TAG, "doInBackground: " + postURL);
       URL url = new URL(postURL);
       HttpURLConnection conn = (HttpURLConnection) url.openConnection();
       InputStream is = new BufferedInputStream(conn.getInputStream());
@@ -35,14 +39,12 @@ public class SelectFavorite extends AsyncTask<Integer, Void, JSONObject> {
       }
 
       String result = builder.toString();
-
-      object = new JSONObject(result);
-      conn.disconnect();
+      array = new JSONArray(result);
       br.close();
       is.close();
     } catch (Exception e){
       e.printStackTrace();
     }
-    return object;
+    return array;
   }
 }

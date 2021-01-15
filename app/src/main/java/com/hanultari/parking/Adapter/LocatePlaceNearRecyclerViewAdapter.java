@@ -62,7 +62,7 @@ public class LocatePlaceNearRecyclerViewAdapter extends RecyclerView.Adapter<Loc
   public void onBindViewHolder(@NonNull LocatePlaceNearRecyclerViewAdapter.ViewHolder holder, int position) {
     String name = dtos.get(position).getName();
     int fare = dtos.get(position).getFare();
-    String distance = dtos.get(position).getDistance();
+    int distance = dtos.get(position).getDistance();
     holder.name.setText(name);
     holder.fare.setText(fare + "원");
     holder.distance.setText(distance);

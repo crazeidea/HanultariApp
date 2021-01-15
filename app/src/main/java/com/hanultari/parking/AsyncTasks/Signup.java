@@ -1,19 +1,11 @@
 package com.hanultari.parking.AsyncTasks;
 
-import android.net.http.AndroidHttpClient;
-import android.net.http.HttpResponseCache;
 import android.os.AsyncTask;
-
-import com.hanultari.parking.Custom.AES256Chiper;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpEntityEnclosingRequestBaseHC4;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.mime.HttpMultipartMode;
-import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
@@ -23,13 +15,10 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.Buffer;
-import java.nio.charset.Charset;
+import java.net.URLEncoder;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.HashMap;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -37,7 +26,7 @@ import javax.crypto.NoSuchPaddingException;
 
 import static com.hanultari.parking.CommonMethod.ipConfig;
 
-public class Signup extends AsyncTask<Void, Void, String> {
+public class Signup extends AsyncTask<Void, Void, Boolean> {
   private static final String TAG = "Login";
 
   private String email, pw, name, tel;
@@ -51,50 +40,32 @@ public class Signup extends AsyncTask<Void, Void, String> {
 
   public Signup(String email, String pw, String name, String tel) throws NoSuchPaddingException, InvalidAlgorithmParameterException, UnsupportedEncodingException, IllegalBlockSizeException, BadPaddingException, NoSuchAlgorithmException, InvalidKeyException {
     this.email = email;
-    this.pw = AES256Chiper.AES_Decode(pw);
+    this.pw = pw;
     this.name = name;
     this.tel = tel;
   }
 
   @Override
-  protected String doInBackground(Void... voids) {
+  protected Boolean doInBackground(Void... voids) {
+    boolean result = false;
     try {
-      MultipartEntityBuilder builder = MultipartEntityBuilder.create();
-      builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
-      builder.setCharset(Charset.forName("UTF-8"));
-
-      builder.addTextBody("email", email, ContentType.create("Multipart/related", "UTF-8"));
-      builder.addTextBody("pw", pw, ContentType.create("Multipart/related", "UTF-8"));
-      builder.addTextBody("name", name, ContentType.create("Multipart/related", "UTF-8"));
-      builder.addTextBody("tel", tel, ContentType.create("Multipart/related", "UTF-8"));
-
-      String postURL = ipConfig + "/signup/android";
-
-      InputStream is = null;
-      httpClient = AndroidHttpClient.newInstance("Android");
-      httpPost = new HttpPost(postURL);
-      httpPost.setEntity(builder.build());
-      httpResponse = httpClient.execute(httpPost);
-      httpEntity = httpResponse.getEntity();
-      is = httpEntity.getContent();
-
-      BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
-      StringBuilder stringBuilder = new StringBuilder();
-      String line = null;
-      while ((line = bufferedReader.readLine()) != null) {
-        stringBuilder.append(line + "\n");
+      JSONObject object = new JSONObject();
+      object.put("name", name).put("pw", pw).put("email", email).put("tel", tel);
+      String sendObject = URLEncoder.encode(object.toString(), "UTF-8");
+      URL url = new URL(ipConfig + "/signup/android?json=" + sendObject);
+      HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+      InputStream is = new BufferedInputStream(conn.getInputStream());
+      BufferedReader br = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+      StringBuffer builder = new StringBuffer();
+      String inputString;
+      while((inputString = br.readLine()) != null) {
+        builder.append(inputString);
       }
-      state = stringBuilder.toString();
-      is.close();
+      result = Boolean.parseBoolean(builder.toString());
     } catch (Exception e) {
       e.printStackTrace();
-    } finally {
-      if (httpEntity != null) httpEntity = null;
-      if (httpResponse != null) httpResponse = null;
-      if (httpPost != null) httpPost = null;
-      if (httpClient != null) httpClient = null;
     }
-    return state;
+    return result;
   }
 
 }
