@@ -40,7 +40,7 @@ public class GuideActivity extends AppCompatActivity {
       transaction.setCustomAnimations(R.anim.fragment_fade_enter, R.anim.fragment_close_exit);
       transaction.replace(R.id.fragmentContainer, new AppChoiceFragment());
       transaction.commitAllowingStateLoss();
-    } else if (view.getId() == R.id.selectGoogleMapFrag || view.getId() == R.id.selectKakaoMapFrag || view.getId() == R.id.selectNaverMapFrag) {
+    } else if (view.getId() == R.id.selectKakaoMapFrag || view.getId() == R.id.selectNaverMapFrag) {
       Log.d(TAG, "clickHandler: App Clicked");
       transaction.setCustomAnimations(R.anim.fragment_fade_enter, R.anim.fragment_close_exit);
       transaction.replace(R.id.fragmentContainer, new ClosingFragment());

@@ -63,9 +63,11 @@ public class LocateNearRecyclerViewAdapter extends RecyclerView.Adapter<LocateNe
     String name = dtos.get(position).getName();
     int fare = dtos.get(position).getFare();
     int distance = dtos.get(position).getDistance();
+    int id = dtos.get(position).getId();
     holder.name.setText(name);
     holder.fare.setText(fare + "원");
-    holder.distance.setText(distance);
+    holder.distance.setText(distance + "m");
+    holder.itemView.setTag(id);
   }
 
   @Override

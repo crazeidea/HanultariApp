@@ -69,9 +69,6 @@ public class SettingActivity extends AppCompatActivity {
     } else if (settings.getString("map", "").equals("kakao")) {
       mapAppName.setText("카카오맵");
       appIcon.setImageResource(R.drawable.kakaomap);
-    } else if (settings.getString("map", "").equals("google")) {
-      mapAppName.setText("구글 지도");
-      appIcon.setImageResource(R.drawable.googlemap);
     }
 
 

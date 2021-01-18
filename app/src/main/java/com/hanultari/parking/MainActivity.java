@@ -10,15 +10,20 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Layout;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.DragEvent;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
+import android.view.animation.Transformation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -27,6 +32,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.annotation.UiThread;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -47,6 +53,7 @@ import com.hanultari.parking.Adapter.MarkerInfoWindowAdapter;
 import com.hanultari.parking.Adapter.PlaceInfoWindowAdapter;
 import com.hanultari.parking.AsyncTasks.SelectMarker;
 import com.hanultari.parking.AsyncTasks.SelectParking;
+import com.hanultari.parking.Custom.OnSwipeTouchListener;
 import com.hanultari.parking.DTO.ParkingDTO;
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.map.CameraAnimation;
@@ -92,9 +99,11 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
   public Marker parkingMarker;
   public InfoWindow placeInfo;
   public Marker placeMarker;
+  public InfoWindow symbolInfo;
 
 
 
+  @SuppressLint("ClickableViewAccessibility")
   @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
   @Override
   public void onCreate(Bundle savedInstanceState) {
@@ -184,9 +193,47 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
       }
     });
 
+    DisplayMetrics displayMetrics = new DisplayMetrics();
 
+    mainRecycler = findViewById(R.id.mainRecyclerView);
+    mainRecycler.setOnFlingListener(new RecyclerView.OnFlingListener() {
+      @Override
+      public boolean onFling(int velocityX, int velocityY) {
+        if(!mainRecycler.canScrollVertically(-1)) {
+          if (velocityY < 0) {
+            Animation animation = new Animation() {
+              @Override
+              protected void applyTransformation(float interpolatedTime, Transformation t) {
+                ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) mainRecycler.getLayoutParams();
+                params.topMargin = Math.round(750 * getResources().getDisplayMetrics().density);
+                mainRecycler.setLayoutParams(params);
+                Log.d(TAG, "applyTransformation: " + params.topMargin);
+              }
+            };
+            animation.setDuration(300);
+            mainRecycler.startAnimation(animation);
+          }
+        }
+        if (velocityY > 0) {
+            Animation animation = new Animation() {
+              @Override
+              protected void applyTransformation(float interpolatedTime, Transformation t) {
+                ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) mainRecycler.getLayoutParams();
+                params.topMargin = Math.round(128 * getResources().getDisplayMetrics().density);
+                mainRecycler.setLayoutParams(params);
+                Log.d(TAG, "applyTransformation: " + params.topMargin);
+              }
+            };
+            animation.setDuration(300);
+            mainRecycler.startAnimation(animation);
+          }
 
-  } // onCreate()
+        Log.d(TAG, "onFling: " + velocityX + ", " + velocityY);
+        return false;
+      }
+
+    });
+  }; // onCreate()
 
 
 
@@ -238,11 +285,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
               infoWindow.setOnClickListener(new Overlay.OnClickListener() {
                 @Override
                 public boolean onClick(@NonNull Overlay overlay) {
-                  placeMarker.setMap(null);
-                  placeInfo.setMap(null);
-                  parkingMarker.setMap(null);
-                  parkingInfo.setMap(null);
-
                   Intent intent = new Intent(MainActivity.this, DetailActivity.class);
                   intent.putExtra("id", marker.getTag().toString());
                   intent.putExtra("currentLocation", currentLatLng);
@@ -274,12 +316,12 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
       public void onMapClick(@NonNull PointF pointF, @NonNull LatLng latLng) {
         Log.d(TAG, "onMapClick: " + latLng.latitude + ", " + latLng.longitude);
         /* 지도 클릭 시 주변 주차장 화면 제거 */
-        recyclerView = findViewById(R.id.mainRecyclerView);
-        if (recyclerView.getVisibility() == View.VISIBLE) {
-          Animation animation = new AlphaAnimation(1, 0);
-          animation.setDuration(300);
-          recyclerView.setVisibility(View.GONE);
-        }
+//        recyclerView = findViewById(R.id.mainRecyclerView);
+//        if (recyclerView.getVisibility() == View.VISIBLE) {
+//          Animation animation = new AlphaAnimation(1, 0);
+//          animation.setDuration(300);
+//          recyclerView.setVisibility(View.GONE);
+//        }
       }
     });
 
@@ -288,13 +330,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
       @Override
       public void onCameraChange(int i, boolean b) {
         /* 카메라 이동 시 주변 주차장 화면 제거 */
-        recyclerView = findViewById(R.id.mainRecyclerView);
-        if (recyclerView.getVisibility() == View.VISIBLE) {
-          Animation animation = new AlphaAnimation(1, 0);
-          animation.setDuration(300);
-          recyclerView.setAnimation(animation);
-          recyclerView.setVisibility(View.GONE);
-        }
+
+
         /* 카메라 이동 시 InfoWindow 제거 */
         infoWindow.close();
       }
@@ -319,6 +356,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     /* 주변 주차장 찾기 버튼 클릭 이벤트 */
     Button btnLocateNear = findViewById(R.id.btnLocateNear);
     btnLocateNear.setOnClickListener(new View.OnClickListener() {
+      @SuppressLint("ClickableViewAccessibility")
       @Override
       public void onClick(View v) {
         ArrayList<ParkingDTO> array = new ArrayList<>();
@@ -328,12 +366,14 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
           for (int i = 0; i < list.length(); i++) {
             JSONObject object = list.getJSONObject(i);
             double distance = getDistance(currentLatLng, new LatLng(object.getDouble("lat"), object.getDouble("lng")));
+            Log.d(TAG, "Distance : " + distance);
             if (distance < 1000) {
               ParkingDTO dto = new ParkingDTO();
               try {
                 int id = object.getInt("id");
                 SelectParking sp = new SelectParking();
                 JSONObject parking = sp.execute(id).get();
+                dto.setId(id);
                 dto.setName(parking.getString("name"));
                 dto.setFare(parking.getInt("fare"));
                 dto.setPaid(parking.getBoolean("paid"));
@@ -357,22 +397,34 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
           mainRecycler.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
           LocateNearRecyclerViewAdapter adapter = new LocateNearRecyclerViewAdapter(getApplicationContext(), array);
           mainRecycler.setAdapter(adapter);
-          if(mainRecycler.getVisibility() == View.GONE) {
-            mainRecycler.setVisibility(View.VISIBLE);
-          } else if (mainRecycler.getVisibility() == View.VISIBLE) {
-            mainRecycler.setVisibility(View.GONE);
-          }
+          ConstraintLayout.LayoutParams params = new ConstraintLayout.LayoutParams(mainRecycler.getLayoutParams());
+          params.topMargin = Math.round(750 * getResources().getDisplayMetrics().density);
+          mainRecycler.setLayoutParams(params);
+//          if(mainRecycler.getVisibility() == View.VISIBLE) {
+//            Animation animation = new Animation() {
+//              @Override
+//              protected void applyTransformation(float interpolatedTime, Transformation t) {
+//                ConstraintLayout.LayoutParams params = new ConstraintLayout.LayoutParams(mainRecycler.getLayoutParams());
+//                params.topMargin = Math.round(750 * getResources().getDisplayMetrics().density);
+//                mainRecycler.setLayoutParams(params);
+//              }
+//            };
+//            animation.setDuration(300);
+//            mainRecycler.startAnimation(animation);
+//          }
+
+          adapter.setOnItemClickListener(new LocateNearRecyclerViewAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View v, int position) {
+              int id = (int) v.getTag();
+              Intent intent = new Intent(getApplicationContext(), DetailActivity.class);
+              intent.putExtra("id", id);
+              startActivity(intent);
+            }
+          });
         }
       }
     }); // btnLocateNear Click
-
-    mainRecycler = findViewById(R.id.mainRecyclerView);
-    mainRecycler.setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
-      @Override
-      public void onSystemUiVisibilityChange(int visibility) {
-        Log.d(TAG, "onSystemUiVisibilityChange: " + visibility);
-      }
-    });
 
     /* 위치 변경에 따른 카메라 이동
     naverMap.addOnLocationChangeListener(new NaverMap.OnLocationChangeListener() {
@@ -405,7 +457,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         placeMarker.setMap(naverMap);
         placeInfo = new InfoWindow();
         ViewGroup rootView = findViewById(R.id.mainmap);
-        placeInfo.setAdapter(new PlaceInfoWindowAdapter(MainActivity.this, rootView, address));
+        String name = intent.getStringExtra("name");
+        placeInfo.setAdapter(new PlaceInfoWindowAdapter(MainActivity.this, rootView, address, name));
         placeInfo.open(placeMarker);
         placeInfo.setOnClickListener(new Overlay.OnClickListener() {
           @Override
@@ -484,6 +537,29 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         });
       }
     }
+
+    /* 지도 심볼 클릭 이벤트 */
+    symbolInfo = new InfoWindow();
+    naverMap.setOnSymbolClickListener(symbol -> {
+      symbolInfo.close();
+      ViewGroup rootView = findViewById(R.id.mainmap);
+      symbolInfo.setAdapter(new PlaceInfoWindowAdapter(this, rootView, "", symbol.getCaption()));
+      symbolInfo.setPosition(symbol.getPosition());
+      symbolInfo.open(naverMap);
+      CameraPosition currentCamera = naverMap.getCameraPosition();
+      CameraPosition symbolCamera = new CameraPosition(symbol.getPosition(), currentCamera.zoom);
+      CameraUpdate cameraUpdate = CameraUpdate.toCameraPosition(symbolCamera).animate(CameraAnimation.Easing);
+      naverMap.moveCamera(cameraUpdate);
+      symbolInfo.setOnClickListener(new Overlay.OnClickListener() {
+        @Override
+        public boolean onClick(@NonNull Overlay overlay) {
+
+          return false;
+        }
+      });
+      return true;
+    });
+
   }// onMapReady()
 
 

@@ -158,6 +158,7 @@ public class SearchRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView
       holder.itemView.setTag(R.string.ITEM_LAT, new Tm128(places.get(position).getMapx(), places.get(position).getMapy()).toLatLng().latitude);
       holder.itemView.setTag(R.string.ITEM_LNG, new Tm128(places.get(position).getMapx(), places.get(position).getMapy()).toLatLng().longitude);
       holder.itemView.setTag(R.string.ITEM_TITLE, places.get(position).getAddress());
+      holder.itemView.setTag(R.string.ITEM_NAME, places.get(position).getName());
     } else {
       ((ParkingViewHoder)holder).setParkingDetail(parkings.get(position - places.size()));
       holder.itemView.setTag(R.string.ITEM_TYPE, "parking");

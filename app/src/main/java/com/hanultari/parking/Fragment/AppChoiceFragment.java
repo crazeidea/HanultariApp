@@ -30,13 +30,6 @@ public class AppChoiceFragment extends Fragment implements View.OnClickListener 
   @Override
   public void onClick(View v) {
     switch(v.getId()) {
-      case R.id.selectGoogleMapFrag: {
-        SharedPreferences settings = this.getActivity().getSharedPreferences("settings", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putString("map", "google");
-        editor.apply();
-        break;
-      }
       case R.id.selectNaverMapFrag: {
         SharedPreferences settings = this.getActivity().getSharedPreferences("settings", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = settings.edit();

@@ -65,7 +65,7 @@ public class LocatePlaceNearRecyclerViewAdapter extends RecyclerView.Adapter<Loc
     int distance = dtos.get(position).getDistance();
     holder.name.setText(name);
     holder.fare.setText(fare + "원");
-    holder.distance.setText(distance);
+    holder.distance.setText(distance + "m");
   }
 
   @Override

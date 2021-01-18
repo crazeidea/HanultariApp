@@ -159,46 +159,6 @@
 
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/selectGoogleMapFrag"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/setting_items_margin_bottom"
-            android:background="@drawable/setting_item_background"
-            android:orientation="horizontal"
-            android:onClick="clickHandler"
-            android:padding="16dp">
-
-            <ImageButton
-                android:id="@+id/btnSelectMapapp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="20dp"
-                android:background="@drawable/button_icon_circle"
-                app:srcCompat="@drawable/googlemap" />
-
-            <LinearLayout
-                android:layout_width="274dp"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/robotobold"
-                    android:text="구글 지도"
-                    android:textColor="@color/black"
-                    android:textSize="16dp" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="구글 지도로 길을 안내합니다." />
-            </LinearLayout>
-
-
-        </LinearLayout>
-
 
     </LinearLayout>
 

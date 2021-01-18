@@ -48,6 +48,7 @@ public class FavoriteActivity extends AppCompatActivity {
     }
     Location currentLoc = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
     LatLng currentLatlng = new LatLng(currentLoc.getLatitude(), currentLoc.getLatitude());
+
     SelectFavorite sf = new SelectFavorite();
     MemberDTO dto = loginDTO;
     ArrayList<ParkingDTO> dtos = new ArrayList<>();
@@ -65,7 +66,7 @@ public class FavoriteActivity extends AppCompatActivity {
             parkingDTO = new ParkingDTO();
             parkingDTO.setName(parkingObj.getString("name"));
             parkingDTO.setFare(parkingObj.getInt("fare"));
-            parkingDTO.setDistance((int) getDistance(currentLatlng, new LatLng(parkingObj.getDouble("lat"), parkingObj.getDouble("lng"))));
+            parkingDTO.setDistance(getDistance(currentLatlng, new LatLng(parkingObj.getDouble("lat"), parkingObj.getDouble("lng"))));
             dtos.add(parkingDTO);
           } catch (Exception e) {
             e.printStackTrace();

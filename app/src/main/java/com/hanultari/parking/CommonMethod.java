@@ -9,6 +9,8 @@ import com.hanultari.parking.DTO.LoginDTO;
 import com.hanultari.parking.DTO.MemberDTO;
 import com.naver.maps.geometry.LatLng;
 
+import org.jetbrains.annotations.NotNull;
+
 public class CommonMethod {
 
   public static String  ipConfig = "http://192.168.0.113:8080";
@@ -37,7 +39,7 @@ public class CommonMethod {
   }
 
   /* 두 지점의 거리를 m 단위로 출력 */
-  public static double getDistance(LatLng current, LatLng target){
+  public static int getDistance(@NotNull LatLng current, @NotNull LatLng target){
     double currentLat = current.latitude;
     double currentLng = current.longitude;
     double targetLat = target.latitude;
@@ -52,7 +54,7 @@ public class CommonMethod {
     dist = Math.acos(dist);
     dist = rad2deg(dist);
     dist = dist * 60 * 1.1515 / 0.62137;
-    return dist;
+    return (int) Math.floor(dist * 1000);
   }
 
   public static double deg2rad(double deg) {

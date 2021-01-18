@@ -89,9 +89,8 @@ public class SearchActivity extends AppCompatActivity {
           parkings.clear();
 
           try {
-            JSONArray placeResult = searchLocation.execute(query).get();
-            Log.d(TAG, "onEditorAction: " + placeResult);
 
+            JSONArray placeResult = searchLocation.execute(query).get();
             /* 장소 검색 결과 수신 */
             for (int i = 0; i < placeResult.length(); i++) {
               JSONObject object = placeResult.getJSONObject(i);
@@ -106,8 +105,6 @@ public class SearchActivity extends AppCompatActivity {
 
 
             JSONArray parkingResult = searchParking.execute(query).get();
-            Log.d(TAG, "onEditorAction: " + parkingResult);
-
             /* 주차장 검색 결과 수신 */
             for(int i = 0; i < parkingResult.length(); i++) {
               JSONObject object = parkingResult.getJSONObject(i);
@@ -143,11 +140,13 @@ public class SearchActivity extends AppCompatActivity {
               float lat = Float.parseFloat(v.getTag(R.string.ITEM_LAT).toString());
               float lng = Float.parseFloat(v.getTag(R.string.ITEM_LNG).toString());
               String title = (String) v.getTag(R.string.ITEM_TITLE);
+              String name = (String) v.getTag(R.string.ITEM_NAME);
               Intent intent = new Intent(getApplicationContext(), MainActivity.class);
               intent.putExtra("type", type);
               intent.putExtra("lat", lat);
               intent.putExtra("lng", lng);
               intent.putExtra("title", title);
+              if(type.equals("place")) intent.putExtra("name", name);
               startActivity(intent);
             }
           });

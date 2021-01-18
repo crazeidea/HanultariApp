@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:visibility="visible">
 
     <com.hanultari.parking.Custom.CustomScrollView
         android:id="@+id/detailScrollView"
@@ -27,26 +28,67 @@
                 android:id="@+id/detailPanorama"
                 android:layout_width="match_parent"
                 android:layout_height="214dp"
-                android:layout_marginBottom="10dp" />
+                android:layout_marginBottom="10dp">
 
-            <TextView
-                android:id="@+id/detailName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/robotobold"
-                android:text="농성동 공영주차장"
-                android:textColor="@color/black"
-                android:textSize="32sp"
-                android:textStyle="bold" />
+            </WebView>
 
-            <TextView
-                android:id="@+id/detailCurrent"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/robotobold"
-                android:text="현재 3자리 남아있어요."
-                android:textColor="@color/black"
-                android:textSize="24sp" />
+                android:layout_height="60dp">
+
+                <TextView
+                    android:id="@+id/detailLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentRight="false"
+                    android:layout_alignParentBottom="true"
+                    android:background="@drawable/label_primary"
+                    android:gravity="center"
+                    android:text="무료"
+                    android:textColor="@color/white"
+                    android:fontFamily="@font/robotobold"
+                    android:layout_marginBottom="10dp"
+                    android:padding="5dp"
+                    android:textSize="18sp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnFavoriteDetail"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_alignParentRight="true"
+                    android:background="@drawable/button_icon_circle"
+                    android:visibility="visible"
+                    app:icon="@android:drawable/star_on" />
+
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/detailName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/robotobold"
+                    android:text="농성동 공영주차장"
+                    android:textColor="@color/black"
+                    android:textSize="32sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/detailCurrent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/robotobold"
+                    android:text="현재 3자리 남아있어요."
+                    android:textColor="@color/black"
+                    android:textSize="24sp" />
+
+            </LinearLayout>
 
             <Space
                 android:layout_width="match_parent"
@@ -307,18 +349,32 @@
 
 
     <FrameLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginRight="24dp"
+        android:layout_marginBottom="24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
         <Button
             android:id="@+id/detailNav"
-            android:layout_width="318dp"
-            android:layout_height="wrap_content"
-            android:text="길 안내 시작" />
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/button_rectangle_white"
+            android:fontFamily="@font/robotobold"
+            android:shadowColor="#00000016"
+            android:shadowDx="2"
+            android:shadowDy="4"
+            android:shadowRadius="4"
+            android:text="길 안내 시작"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:backgroundTint="@color/primary" />
     </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

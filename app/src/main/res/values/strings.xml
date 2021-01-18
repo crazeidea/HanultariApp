@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">한울타리</string>
+    <string name="app_name">대따</string>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
@@ -22,4 +22,5 @@
     <string name="ITEM_LAT">2</string>
     <string name="ITEM_LNG">3</string>
     <string name="ITEM_TITLE">4</string>
+    <string name="ITEM_NAME">5</string>
 </resources>

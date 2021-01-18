@@ -22,12 +22,14 @@ public class PlaceInfoWindowAdapter extends InfoWindow.DefaultViewAdapter{
   private final Context context;
   private final ViewGroup parent;
   private final String address;
+  private final String name;
 
-  public PlaceInfoWindowAdapter(Context context, ViewGroup parent, String address) {
+  public PlaceInfoWindowAdapter(Context context, ViewGroup parent, String address, String name) {
     super(context);
     this.context = context;
     this.parent = parent;
     this.address = address;
+    this.name = name;
   }
 
 
@@ -36,8 +38,10 @@ public class PlaceInfoWindowAdapter extends InfoWindow.DefaultViewAdapter{
   protected View getContentView(@NonNull InfoWindow infoWindow) {
     View view = LayoutInflater.from(context).inflate(R.layout.infowindow_place, parent, false);
 
-    TextView name = view.findViewById(R.id.infoWindowName);
-    name.setText(address);
+    TextView namefield = view.findViewById(R.id.infoWindowName);
+    namefield.setText(name);
+    TextView addr = view.findViewById(R.id.infoWindowAddr);
+    addr.setText(address);
 
     return view;
   }
