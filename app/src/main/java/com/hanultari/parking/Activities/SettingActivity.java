@@ -2,7 +2,6 @@ package com.hanultari.parking.Activities;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -33,7 +32,7 @@ public class SettingActivity extends AppCompatActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_setting);
 
-    ImageButton imageButtonBack = findViewById(R.id.imageButtonBack);
+    ImageButton imageButtonBack = findViewById(R.id.btnBackFavorite);
     Switch switchWoman = findViewById(R.id.switchWoman);
     Switch switchDisabled = findViewById(R.id.switchDisabled);
     Switch switchSmall = findViewById(R.id.switchSmall);

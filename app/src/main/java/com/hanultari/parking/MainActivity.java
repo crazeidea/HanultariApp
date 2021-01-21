@@ -45,9 +45,11 @@ import com.google.android.material.navigation.NavigationView;
 import com.hanultari.parking.Activities.DetailActivity;
 import com.hanultari.parking.Activities.FavoriteActivity;
 import com.hanultari.parking.Activities.LoginActivity;
+import com.hanultari.parking.Activities.NoticeActivity;
 import com.hanultari.parking.Activities.SearchActivity;
 import com.hanultari.parking.Activities.SettingActivity;
 import com.hanultari.parking.Activities.SignupActivity;
+import com.hanultari.parking.Activities.TicketActivity;
 import com.hanultari.parking.Adapter.LocateNearRecyclerViewAdapter;
 import com.hanultari.parking.Adapter.MarkerInfoWindowAdapter;
 import com.hanultari.parking.Adapter.PlaceInfoWindowAdapter;
@@ -102,7 +104,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
   public InfoWindow symbolInfo;
 
 
-
   @SuppressLint("ClickableViewAccessibility")
   @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
   @Override
@@ -110,7 +111,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     super.onCreate(savedInstanceState);
     try {
       setContentView(R.layout.activity_main);
-    } catch (Exception e){
+    } catch (Exception e) {
       e.printStackTrace();
     }
 
@@ -183,10 +184,23 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
       public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
         switch (id) {
-          case R.id.navSetting : startActivity(new Intent(MainActivity.this, SettingActivity.class)); break;
-          case R.id.navLogin : startActivity(new Intent(MainActivity.this, LoginActivity.class)); break;
-          case R.id.navFavorite : startActivity(new Intent(MainActivity.this, FavoriteActivity.class)); break;
-          case R.id.navSignup : startActivity(new Intent(MainActivity.this, SignupActivity.class)); break;
+          case R.id.navSetting:
+            startActivity(new Intent(MainActivity.this, SettingActivity.class));
+            break;
+          case R.id.navLogin:
+            startActivity(new Intent(MainActivity.this, LoginActivity.class));
+            break;
+          case R.id.navFavorite:
+            startActivity(new Intent(MainActivity.this, FavoriteActivity.class));
+            break;
+          case R.id.navSignup:
+            startActivity(new Intent(MainActivity.this, SignupActivity.class));
+            break;
+          case R.id.navNotice:
+            startActivity(new Intent(MainActivity.this, NoticeActivity.class));
+            break;
+          case R.id.navTicket:
+            startActivity(new Intent(MainActivity.this, TicketActivity.class));
           //TODO
         }
         return true;
@@ -199,43 +213,45 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     mainRecycler.setOnFlingListener(new RecyclerView.OnFlingListener() {
       @Override
       public boolean onFling(int velocityX, int velocityY) {
-        if(!mainRecycler.canScrollVertically(-1)) {
-          if (velocityY < 0) {
+        if (!mainRecycler.canScrollVertically(-1)) { // 최상단 도달 시
+          if (velocityY < 0) { // 아래로 스크롤 시
             Animation animation = new Animation() {
               @Override
               protected void applyTransformation(float interpolatedTime, Transformation t) {
                 ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) mainRecycler.getLayoutParams();
-                params.topMargin = Math.round(750 * getResources().getDisplayMetrics().density);
+
+                params.topToTop = R.id.btnLocateNear;
+                params.topMargin = Math.round(64 * getResources().getDisplayMetrics().density);
                 mainRecycler.setLayoutParams(params);
-                Log.d(TAG, "applyTransformation: " + params.topMargin);
               }
             };
             animation.setDuration(300);
             mainRecycler.startAnimation(animation);
           }
-        }
-        if (velocityY > 0) {
+        } else {
+          if (velocityY > 0) {
             Animation animation = new Animation() {
               @Override
               protected void applyTransformation(float interpolatedTime, Transformation t) {
                 ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) mainRecycler.getLayoutParams();
+
+                params.topToTop = R.id.mainConstraint;
                 params.topMargin = Math.round(128 * getResources().getDisplayMetrics().density);
                 mainRecycler.setLayoutParams(params);
-                Log.d(TAG, "applyTransformation: " + params.topMargin);
               }
             };
             animation.setDuration(300);
             mainRecycler.startAnimation(animation);
           }
+
+        }
 
         Log.d(TAG, "onFling: " + velocityX + ", " + velocityY);
         return false;
-      }
 
+      };
     });
-  }; // onCreate()
-
-
+  }// onCreate()
 
 
   @UiThread
@@ -397,26 +413,26 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
           mainRecycler.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
           LocateNearRecyclerViewAdapter adapter = new LocateNearRecyclerViewAdapter(getApplicationContext(), array);
           mainRecycler.setAdapter(adapter);
-          ConstraintLayout.LayoutParams params = new ConstraintLayout.LayoutParams(mainRecycler.getLayoutParams());
-          params.topMargin = Math.round(750 * getResources().getDisplayMetrics().density);
-          mainRecycler.setLayoutParams(params);
-//          if(mainRecycler.getVisibility() == View.VISIBLE) {
-//            Animation animation = new Animation() {
-//              @Override
-//              protected void applyTransformation(float interpolatedTime, Transformation t) {
-//                ConstraintLayout.LayoutParams params = new ConstraintLayout.LayoutParams(mainRecycler.getLayoutParams());
-//                params.topMargin = Math.round(750 * getResources().getDisplayMetrics().density);
-//                mainRecycler.setLayoutParams(params);
-//              }
-//            };
-//            animation.setDuration(300);
-//            mainRecycler.startAnimation(animation);
-//          }
+
+          if (mainRecycler.getVisibility() == View.VISIBLE) {
+            Animation animation = new Animation() {
+              @Override
+              protected void applyTransformation(float interpolatedTime, Transformation t) {
+                ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) mainRecycler.getLayoutParams();
+                params.topToTop = R.id.mainConstraint;
+                params.topMargin = Math.round(128 * getResources().getDisplayMetrics().density);
+                mainRecycler.setLayoutParams(params);
+              }
+            };
+            animation.setDuration(300);
+            mainRecycler.startAnimation(animation);
+          }
 
           adapter.setOnItemClickListener(new LocateNearRecyclerViewAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View v, int position) {
-              int id = (int) v.getTag();
+              ParkingDTO dto = (ParkingDTO) v.getTag();
+              int id = dto.getId();
               Intent intent = new Intent(getApplicationContext(), DetailActivity.class);
               intent.putExtra("id", id);
               startActivity(intent);
@@ -499,7 +515,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
               mainRecycler.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
               LocateNearRecyclerViewAdapter adapter = new LocateNearRecyclerViewAdapter(getApplicationContext(), array);
               mainRecycler.setAdapter(adapter);
-              if(mainRecycler.getVisibility() == View.GONE) {
+              if (mainRecycler.getVisibility() == View.GONE) {
                 mainRecycler.setVisibility(View.VISIBLE);
               } else if (mainRecycler.getVisibility() == View.VISIBLE) {
                 mainRecycler.setVisibility(View.GONE);
@@ -563,45 +579,50 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
   }// onMapReady()
 
 
-      /* 사이드바 뒤로가기 처리 */
-      private long time = 0;
-      @Override public void onBackPressed () {
-        DrawerLayout mainDrawerLayout = findViewById(R.id.mainDrawerLayout);
-        if (mainDrawerLayout.isDrawerOpen(GravityCompat.START)) {
-          mainDrawerLayout.closeDrawer(GravityCompat.START);
-        } else if (mainRecycler.getVisibility() == View.VISIBLE) {
-          mainRecycler.setVisibility(View.GONE);
-        } else if (placeInfo != null) {
-          placeMarker.setMap(null);
-          placeInfo = null;
-        } else if (parkingInfo != null) {
-          parkingMarker.setMap(null);
-          parkingInfo = null;
-        } else {
-          if(System.currentTimeMillis() - time >= 2000) {
-            time = System.currentTimeMillis();
-            Toast.makeText(this, "뒤로가기 버튼을 한번 더 누르면 종료합니다.", Toast.LENGTH_SHORT).show();
-          } else if(System.currentTimeMillis() - time <= 2000) {
-            finish();
-          }
-        }
-      }
+  /* 사이드바 뒤로가기 처리 */
+  private long time = 0;
 
-      @Override public void onRequestPermissionsResult ( int requestCode,
-      @NonNull String[] permissions, @NonNull int[] grantResults){
-        if (locationSource.onRequestPermissionsResult(requestCode, permissions, grantResults)) {
-          if (!locationSource.isActivated()) { // 권한 거부됨
-            naverMap.setLocationTrackingMode(LocationTrackingMode.None);
-          }
-          return;
-        }
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+  @Override
+  public void onBackPressed() {
+    DrawerLayout mainDrawerLayout = findViewById(R.id.mainDrawerLayout);
+    if (mainDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+      mainDrawerLayout.closeDrawer(GravityCompat.START);
+    } else if (((ConstraintLayout.LayoutParams)mainRecycler.getLayoutParams()).topToTop == R.id.mainConstraint) {
+      ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) mainRecycler.getLayoutParams();
+      params.topToTop = R.id.btnLocateNear;
+      params.topMargin = Math.round(64 * getResources().getDisplayMetrics().density);
+      mainRecycler.setLayoutParams(params);
+    } else if (placeInfo != null) {
+      placeMarker.setMap(null);
+      placeInfo = null;
+    } else if (parkingInfo != null) {
+      parkingMarker.setMap(null);
+      parkingInfo = null;
+    } else {
+      if (System.currentTimeMillis() - time >= 2000) {
+        time = System.currentTimeMillis();
+        Toast.makeText(this, "뒤로가기 버튼을 한번 더 누르면 종료합니다.", Toast.LENGTH_SHORT).show();
+      } else if (System.currentTimeMillis() - time <= 2000) {
+        finish();
       }
+    }
+  }
+
+  @Override
+  public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    if (locationSource.onRequestPermissionsResult(requestCode, permissions, grantResults)) {
+      if (!locationSource.isActivated()) { // 권한 거부됨
+        naverMap.setLocationTrackingMode(LocationTrackingMode.None);
+      }
+      return;
+    }
+    super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+  }
 
 
   @Override
   public boolean onPrepareOptionsMenu(Menu menu) {
-    if(loginDTO == null) {
+    if (loginDTO == null) {
       menu.findItem(R.id.navLogout).setVisible(false);
     } else {
       menu.findItem(R.id.navLogin).setVisible(false);
@@ -610,8 +631,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     super.onPrepareOptionsMenu(menu);
     return true;
   }
-
-
 
 
 }

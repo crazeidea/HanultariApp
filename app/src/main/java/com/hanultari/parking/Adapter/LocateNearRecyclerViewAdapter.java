@@ -31,8 +31,9 @@ public class LocateNearRecyclerViewAdapter extends RecyclerView.Adapter<LocateNe
     void onItemClick(View v, int position);
   }
 
-  public void setOnItemClickListener(OnItemClickListener listener) {this.listener = listener;}
-
+  public void setOnItemClickListener(OnItemClickListener listener) {
+    this.listener = listener;
+  }
 
   public class ViewHolder extends RecyclerView.ViewHolder {
     private final LinearLayout badges;
@@ -47,6 +48,18 @@ public class LocateNearRecyclerViewAdapter extends RecyclerView.Adapter<LocateNe
       name = itemView.findViewById(R.id.parkingNameDetail);
       fare = itemView.findViewById(R.id.parkingFareDetail);
       distance = itemView.findViewById(R.id.parkingDistanceDetail);
+
+      itemView.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+          int pos = getAdapterPosition();
+          if (pos != RecyclerView.NO_POSITION) {
+            if (listener != null) {
+              listener.onItemClick(v, pos);
+            }
+          }
+        }
+      });
     }
   }
 
@@ -67,7 +80,7 @@ public class LocateNearRecyclerViewAdapter extends RecyclerView.Adapter<LocateNe
     holder.name.setText(name);
     holder.fare.setText(fare + "원");
     holder.distance.setText(distance + "m");
-    holder.itemView.setTag(id);
+    holder.itemView.setTag(dtos.get(position));
   }
 
   @Override

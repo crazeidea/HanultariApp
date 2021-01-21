@@ -30,6 +30,8 @@ public class LoginActivity extends AppCompatActivity {
   protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_login);
+
+
     Button btnLogin = findViewById(R.id.buttonLogin);
     btnLogin.setOnClickListener(new View.OnClickListener() {
       @Override
@@ -39,8 +41,17 @@ public class LoginActivity extends AppCompatActivity {
         pw = findViewById(R.id.inputPassword);
         String pwinfo = pw.getText().toString();
         boolean isLogin = executeLogin(emailinfo, pwinfo);
-        if(isLogin) {
+        if (isLogin) {
+          Intent intent = getIntent();
+          if (intent.getStringExtra("from") != null) {
+            if (intent.getStringExtra("from").equals("ticket")) {
+              startActivity(new Intent(LoginActivity.this, TicketActivity.class));
+              finish();
+            }
+          } else {
           startActivity(new Intent(LoginActivity.this, MainActivity.class));
+          finish();
+          }
         } else {
           Toast.makeText(LoginActivity.this, "올바르지 않은 계정입니다.", Toast.LENGTH_SHORT).show();
         }

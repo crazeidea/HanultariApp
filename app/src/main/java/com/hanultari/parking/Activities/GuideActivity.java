@@ -30,7 +30,7 @@ public class GuideActivity extends AppCompatActivity {
     setContentView(R.layout.activity_guide);
     fm = getSupportFragmentManager();
     transaction = fm.beginTransaction();
-    transaction.add(R.id.fragmentContainer, new WelcomeFragment());
+    transaction.add(R.id.guideFragContainer, new WelcomeFragment());
     transaction.commitAllowingStateLoss();
   }
 
@@ -38,12 +38,12 @@ public class GuideActivity extends AppCompatActivity {
     transaction = fm.beginTransaction();
     if(view.getId() == R.id.textNext) {
       transaction.setCustomAnimations(R.anim.fragment_fade_enter, R.anim.fragment_close_exit);
-      transaction.replace(R.id.fragmentContainer, new AppChoiceFragment());
+      transaction.replace(R.id.guideFragContainer, new AppChoiceFragment());
       transaction.commitAllowingStateLoss();
     } else if (view.getId() == R.id.selectKakaoMapFrag || view.getId() == R.id.selectNaverMapFrag) {
       Log.d(TAG, "clickHandler: App Clicked");
       transaction.setCustomAnimations(R.anim.fragment_fade_enter, R.anim.fragment_close_exit);
-      transaction.replace(R.id.fragmentContainer, new ClosingFragment());
+      transaction.replace(R.id.guideFragContainer, new ClosingFragment());
       transaction.commitAllowingStateLoss();
     } else if (view.getId() == R.id.textStart) {
       Intent intent = new Intent(this, MainActivity.class);

@@ -9,6 +9,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -84,5 +85,13 @@ public class FavoriteActivity extends AppCompatActivity {
       TextView favoriteTitle = findViewById(R.id.favoriteTitle);
       favoriteTitle.setVisibility(View.VISIBLE);
     }
+
+    ImageButton btnBack = findViewById(R.id.btnBackFavorite);
+    btnBack.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        finish();
+      }
+    });
   }
 }

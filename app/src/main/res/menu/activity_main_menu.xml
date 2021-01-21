@@ -18,16 +18,18 @@
     </group>
     <group android:checkableBehavior="single">
         <item
+            android:id="@+id/navNotice"
+            android:title="공지사항" />
+        <item
             android:id="@+id/navFavorite"
             android:icon="@drawable/ic_fav"
             android:title="즐겨찾는 주차장"/>
         <item
+            android:id="@+id/navTicket"
+            android:title="1:1 문의" />
+        <item
             android:id="@+id/navSetting"
             android:icon="@drawable/ic_settings"
             android:title="설정"/>
-        <item
-            android:id="@+id/navLog"
-            android:icon="@drawable/ic_parking"
-            android:title="주차기록" />
     </group>
 </menu>

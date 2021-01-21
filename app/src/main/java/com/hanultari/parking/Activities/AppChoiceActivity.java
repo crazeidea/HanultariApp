@@ -21,7 +21,7 @@ public class AppChoiceActivity extends AppCompatActivity {
     setContentView(R.layout.activity_appchoice);
 
 
-    ImageButton imageButtonBack = findViewById(R.id.imageButtonBack);
+    ImageButton imageButtonBack = findViewById(R.id.btnBackFavorite);
 
     imageButtonBack.setOnClickListener(new View.OnClickListener() {
       @Override

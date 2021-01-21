@@ -5,7 +5,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
 
-import com.hanultari.parking.DTO.LoginDTO;
 import com.hanultari.parking.DTO.MemberDTO;
 import com.naver.maps.geometry.LatLng;
 
