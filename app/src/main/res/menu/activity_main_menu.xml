@@ -19,6 +19,7 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/navNotice"
+            android:icon="@drawable/ic_megaphone"
             android:title="공지사항" />
         <item
             android:id="@+id/navFavorite"
@@ -26,6 +27,7 @@
             android:title="즐겨찾는 주차장"/>
         <item
             android:id="@+id/navTicket"
+            android:icon="@drawable/ic_question"
             android:title="1:1 문의" />
         <item
             android:id="@+id/navSetting"

@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginBottom="16dp"
     android:visibility="visible">
 
     <com.hanultari.parking.Custom.CustomScrollView
@@ -43,13 +44,13 @@
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentRight="false"
                     android:layout_alignParentBottom="true"
+                    android:layout_marginBottom="10dp"
                     android:background="@drawable/label_primary"
+                    android:fontFamily="@font/robotobold"
                     android:gravity="center"
+                    android:padding="5dp"
                     android:text="무료"
                     android:textColor="@color/white"
-                    android:fontFamily="@font/robotobold"
-                    android:layout_marginBottom="10dp"
-                    android:padding="5dp"
                     android:textSize="18sp" />
 
                 <com.google.android.material.button.MaterialButton
@@ -92,7 +93,7 @@
 
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="40dp" />
+                android:layout_height="16dp" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -135,7 +136,7 @@
                     android:fontFamily="@font/robotobold"
                     android:text="기본요금 3,000원"
                     android:textColor="@color/black"
-                    android:textSize="26sp" />
+                    android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/detailAddedFare"
@@ -173,8 +174,8 @@
 
                 <TextView
                     android:id="@+id/detailOperTime"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:fontFamily="@font/robotobold"
                     android:textColor="@color/black"
                     android:textSize="20sp" />
@@ -240,7 +241,7 @@
                 </LinearLayout>
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/labelIcon"
+                    android:id="@+id/btnShare"
                     android:layout_width="60dp"
                     android:layout_height="60dp"
                     android:layout_alignParentRight="true"
@@ -338,6 +339,21 @@
                     app:strokeWidth="3dp" />
 
             </RelativeLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:fontFamily="@font/robotobold"
+                android:text="이용 후기"
+                android:textColor="@color/black"
+                android:textSize="20sp" />
+
+            <LinearLayout
+                android:id="@+id/linearReviews"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"></LinearLayout>
 
             <Space
                 android:layout_width="match_parent"

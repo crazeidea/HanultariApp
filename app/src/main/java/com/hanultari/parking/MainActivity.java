@@ -284,7 +284,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             else marker.setIcon(OverlayImage.fromResource(R.drawable.ic_marker_free));
           }
           marker.setPosition(latLng);
-          marker.setTag(object.get("id"));
+          marker.setTag(object.getInt("id"));
           marker.setMap(naverMap);
 
           /* 마커 클릭 시 이벤트 */
@@ -302,7 +302,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 @Override
                 public boolean onClick(@NonNull Overlay overlay) {
                   Intent intent = new Intent(MainActivity.this, DetailActivity.class);
-                  intent.putExtra("id", marker.getTag().toString());
+                  intent.putExtra("id", (int) marker.getTag());
                   intent.putExtra("currentLocation", currentLatLng);
                   SelectParking selectParking = new SelectParking();
                   try {
@@ -463,8 +463,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     if (intent.getStringExtra("type") != null) {
       String type = intent.getStringExtra("type");
       LatLng latlng = new LatLng(intent.getFloatExtra("lat", 0), intent.getFloatExtra("lng", 0));
-      String address = intent.getStringExtra("title");
       if (getIntent().getStringExtra("type").equals("place")) {
+        String address = intent.getStringExtra("title");
         CameraPosition placePosition = new CameraPosition(latlng, 16);
         CameraUpdate cameraUpdate = CameraUpdate.toCameraPosition(placePosition).animate(CameraAnimation.Fly);
         naverMap.moveCamera(cameraUpdate);
@@ -525,6 +525,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
           }
         });
       } else if (getIntent().getStringExtra("type").equals("parking")) {
+        int id = getIntent().getIntExtra("id", 0);
         CameraPosition parkingPosition = new CameraPosition(latlng, 16);
         CameraUpdate cameraUpdate = CameraUpdate.toCameraPosition(parkingPosition).animate(CameraAnimation.Fly);
         naverMap.moveCamera(cameraUpdate);
@@ -533,17 +534,17 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         parkingMarker.setMap(naverMap);
         parkingInfo = new InfoWindow();
         ViewGroup rootView = findViewById(R.id.mainmap);
-        parkingInfo.setAdapter(new MarkerInfoWindowAdapter(this, rootView, Integer.parseInt(address), latlng, currentLatLng));
+        parkingInfo.setAdapter(new MarkerInfoWindowAdapter(this, rootView, id, latlng, currentLatLng));
         parkingInfo.open(parkingMarker);
         parkingInfo.setOnClickListener(new Overlay.OnClickListener() {
           @Override
           public boolean onClick(@NonNull Overlay overlay) {
             Intent intent = new Intent(MainActivity.this, DetailActivity.class);
-            intent.putExtra("id", address);
+            intent.putExtra("id", id);
             intent.putExtra("currentLocation", currentLatLng);
             SelectParking sp = new SelectParking();
             try {
-              intent.putExtra("markerName", sp.execute(Integer.valueOf(address)).get().toString());
+              intent.putExtra("markerName", sp.execute(id).get().toString());
             } catch (Exception e) {
               e.printStackTrace();
             }

@@ -88,7 +88,6 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/divWoman"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/setting_items_margin_bottom"
@@ -98,46 +97,7 @@
 
 
             <LinearLayout
-                android:layout_width="248dp"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/tvWomanTitle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/robotobold"
-                    android:text="여성 운전자"
-                    android:textColor="@color/black"
-                    android:textSize="16dp" />
-
-                <TextView
-                    android:id="@+id/tvWomanSubtitle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="여성 전용 주차좌석이 있는 주차장을 우선으로 안내해드려요." />
-            </LinearLayout>
-
-            <Switch
-                android:id="@+id/switchWoman"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:theme="@style/customSwitchStyle" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/divDisabled"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/setting_items_margin_bottom"
-            android:background="@drawable/setting_item_background"
-            android:orientation="horizontal"
-            android:padding="16dp">
-
-
-            <LinearLayout
-                android:layout_width="248dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
@@ -146,7 +106,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/robotobold"
-                    android:text="장애인 운전자"
+                    android:text="대따"
                     android:textColor="@color/black"
                     android:textSize="16sp" />
 
@@ -154,54 +114,9 @@
                     android:id="@+id/tvDisabledSubtitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="장애인 전용 주차좌석이 있는 주차장을 우선으로 안내해드려요." />
+                    android:text="버전 : 1.0.0" />
             </LinearLayout>
 
-            <Switch
-                android:id="@+id/switchDisabled"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:theme="@style/customSwitchStyle" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/divSmall"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/setting_items_margin_bottom"
-            android:background="@drawable/setting_item_background"
-            android:orientation="horizontal"
-            android:padding="16dp">
-
-
-            <LinearLayout
-                android:layout_width="248dp"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/tvSmallTitle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/robotobold"
-                    android:text="경차 운전"
-                    android:textColor="@color/black"
-                    android:textSize="16sp" />
-
-                <TextView
-                    android:id="@+id/tvSmallSubtitle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="경차 전용 주차좌석이 있는 주차장을 우선으로 안내해드려요." />
-            </LinearLayout>
-
-            <Switch
-                android:id="@+id/switchSmall"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:theme="@style/customSwitchStyle" />
         </LinearLayout>
 
 

@@ -23,4 +23,7 @@
     <string name="ITEM_LNG">3</string>
     <string name="ITEM_TITLE">4</string>
     <string name="ITEM_NAME">5</string>
+
+    <string name="TICKET_TICKET">1000</string>
+    <string name="TICKET_ANSWER">1001</string>
 </resources>

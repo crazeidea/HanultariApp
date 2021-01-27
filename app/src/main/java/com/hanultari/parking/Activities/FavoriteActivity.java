@@ -2,6 +2,7 @@ package com.hanultari.parking.Activities;
 
 import android.Manifest;
 import android.app.Service;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -23,6 +24,7 @@ import com.hanultari.parking.AsyncTasks.SelectFavorite;
 import com.hanultari.parking.AsyncTasks.SelectParking;
 import com.hanultari.parking.DTO.MemberDTO;
 import com.hanultari.parking.DTO.ParkingDTO;
+import com.hanultari.parking.MainActivity;
 import com.hanultari.parking.R;
 import com.naver.maps.geometry.LatLng;
 
@@ -48,7 +50,7 @@ public class FavoriteActivity extends AppCompatActivity {
       return;
     }
     Location currentLoc = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-    LatLng currentLatlng = new LatLng(currentLoc.getLatitude(), currentLoc.getLatitude());
+    LatLng currentLatlng = new LatLng(currentLoc.getLatitude(), currentLoc.getLongitude());
 
     SelectFavorite sf = new SelectFavorite();
     MemberDTO dto = loginDTO;
@@ -67,6 +69,9 @@ public class FavoriteActivity extends AppCompatActivity {
             parkingDTO = new ParkingDTO();
             parkingDTO.setName(parkingObj.getString("name"));
             parkingDTO.setFare(parkingObj.getInt("fare"));
+            parkingDTO.setLat((float) parkingObj.getDouble("lat"));
+            parkingDTO.setLng((float) parkingObj.getDouble("lng"));
+            parkingDTO.setId(parkingObj.getInt("id"));
             parkingDTO.setDistance(getDistance(currentLatlng, new LatLng(parkingObj.getDouble("lat"), parkingObj.getDouble("lng"))));
             dtos.add(parkingDTO);
           } catch (Exception e) {
@@ -80,6 +85,22 @@ public class FavoriteActivity extends AppCompatActivity {
         favoriteRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         FavoriteRecyclerViewAdapter adapter = new FavoriteRecyclerViewAdapter(this, dtos);
         favoriteRecyclerView.setAdapter(adapter);
+
+        adapter.setOnItemClickListener(new FavoriteRecyclerViewAdapter.OnItemClickListener() {
+          @Override
+          public void onItemClick(View v, int position) {
+            ParkingDTO dto = (ParkingDTO) v.getTag();
+            Intent intent = new Intent(FavoriteActivity.this, MainActivity.class);
+            intent.putExtra("type", "parking");
+            intent.putExtra("lat", dto.getLat());
+            intent.putExtra("lng", dto.getLng());
+            intent.putExtra("id", dto.getId());
+            startActivity(intent);
+
+
+          }
+        });
+
       }
     } else {
       TextView favoriteTitle = findViewById(R.id.favoriteTitle);

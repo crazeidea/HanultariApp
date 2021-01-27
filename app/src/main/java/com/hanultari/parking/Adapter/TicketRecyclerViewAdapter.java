@@ -18,11 +18,13 @@ public class TicketRecyclerViewAdapter extends RecyclerView.Adapter<TicketRecycl
 
   private final Context context;
   private final ArrayList<TicketDTO> dtos;
+  private final ArrayList<TicketDTO> answers;
   private OnItemClickListener listener = null;
 
-  public TicketRecyclerViewAdapter(Context context, ArrayList<TicketDTO> dtos) {
+  public TicketRecyclerViewAdapter(Context context, ArrayList<TicketDTO> dtos, ArrayList<TicketDTO> answers) {
     this.context = context;
     this.dtos = dtos;
+    this.answers = answers;
   }
 
   public interface OnItemClickListener {
@@ -84,7 +86,8 @@ public class TicketRecyclerViewAdapter extends RecyclerView.Adapter<TicketRecycl
     holder.ticketTitle.setText(title);
     holder.ticketPreview.setText(preview);
     holder.ticketWritedate.setText(writedate);
-    holder.itemView.setTag(dtos.get(position));
+    holder.itemView.setTag(R.string.TICKET_TICKET, dtos.get(position));
+    if(answers.size() > 0) holder.itemView.setTag(R.string.TICKET_ANSWER, answers.get(position) );
   }
 
   @Override

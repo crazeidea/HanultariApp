@@ -21,6 +21,7 @@ public class FavoriteRecyclerViewAdapter extends RecyclerView.Adapter<FavoriteRe
 
   private final Context context;
   private ArrayList<ParkingDTO> dtos;
+  private OnItemClickListener listener = null;
 
   public FavoriteRecyclerViewAdapter(Context context, ArrayList<ParkingDTO> dtos) {
     this.context = context;
@@ -40,8 +41,26 @@ public class FavoriteRecyclerViewAdapter extends RecyclerView.Adapter<FavoriteRe
       name = itemView.findViewById(R.id.parkingNameDetail);
       fare = itemView.findViewById(R.id.parkingFareDetail);
       distance = itemView.findViewById(R.id.parkingDistanceDetail);
+
+      itemView.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+          int pos = getAdapterPosition();
+          if (pos != RecyclerView.NO_POSITION) {
+            if (listener != null) {
+              listener.onItemClick(v, pos);
+            }
+          }
+        }
+      });
     }
   }
+
+  public interface OnItemClickListener {
+    void onItemClick(View v, int position);
+  }
+
+  public void setOnItemClickListener(OnItemClickListener listener) {this.listener = listener;}
 
   @NonNull
   @Override
@@ -56,10 +75,15 @@ public class FavoriteRecyclerViewAdapter extends RecyclerView.Adapter<FavoriteRe
     Log.d(TAG, "onBindViewHolder: " + dtos);
     String name = dtos.get(position).getName();
     int fare = dtos.get(position).getFare();
-    double distance = dtos.get(position).getDistance();
+    int distance = dtos.get(position).getDistance();
     holder.name.setText(name);
     holder.fare.setText(fare + "원");
-    holder.distance.setText(String.valueOf(distance));
+    if(distance > 1000) {
+      holder.distance.setText(distance/1000 + "." + Math.round(distance%1000/100) + "km");
+    } else {
+      holder.distance.setText(distance + "m");
+    }
+    holder.itemView.setTag(dtos.get(position));
   }
 
   @Override

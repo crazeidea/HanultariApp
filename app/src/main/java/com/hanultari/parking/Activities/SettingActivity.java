@@ -33,34 +33,12 @@ public class SettingActivity extends AppCompatActivity {
     setContentView(R.layout.activity_setting);
 
     ImageButton imageButtonBack = findViewById(R.id.btnBackFavorite);
-    Switch switchWoman = findViewById(R.id.switchWoman);
-    Switch switchDisabled = findViewById(R.id.switchDisabled);
-    Switch switchSmall = findViewById(R.id.switchSmall);
     LinearLayout selectApp = findViewById(R.id.selectApp);
     TextView mapAppName = findViewById(R.id.tvMapAppSubtitle);
     ImageButton appIcon = findViewById(R.id.btnSelectMapapp);
-
-
-    switchWoman.setOnCheckedChangeListener(new womanSwitchListener());
-    switchDisabled.setOnCheckedChangeListener(new disabledSwitchListener());
-    switchSmall.setOnCheckedChangeListener(new smallSwitchListener());
+;
 
     SharedPreferences settings = getSharedPreferences("settings", MODE_PRIVATE);
-    if (settings.getBoolean("isWoman", false)) {
-      switchWoman.setChecked(true);
-    } else {
-      switchWoman.setChecked(false);
-    }
-    if (settings.getBoolean("isDisabled", false)) {
-      switchDisabled.setChecked(true);
-    } else {
-      switchDisabled.setChecked(false);
-    }
-    if (settings.getBoolean("isSmall", false)) {
-      switchSmall.setChecked(true);
-    } else {
-      switchSmall.setChecked(false);
-    }
 
     if(settings.getString("map", "").equals("naver")) {
       mapAppName.setText("네이버 지도");
@@ -86,32 +64,6 @@ public class SettingActivity extends AppCompatActivity {
         startActivity(intent);
       }
     });
-
-    LinearLayout divWoman = findViewById(R.id.divWoman);
-    divWoman.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        switchWoman.toggle();
-      }
-    });
-
-    LinearLayout divDisabled = findViewById(R.id.divDisabled);
-    divDisabled.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        switchDisabled.toggle();
-      }
-    });
-
-    LinearLayout divSmall = findViewById(R.id.divSmall);
-    divSmall.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        switchSmall.toggle();
-      }
-    });
-
-
   }
 
   class womanSwitchListener implements CompoundButton.OnCheckedChangeListener {

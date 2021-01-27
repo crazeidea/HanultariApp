@@ -16,9 +16,11 @@ import com.hanultari.parking.R;
 public class TicketDetailFragment extends Fragment {
 
   private final TicketDTO dto;
+  private final TicketDTO answer;
 
-  public TicketDetailFragment(TicketDTO dto) {
+  public TicketDetailFragment(TicketDTO dto, TicketDTO answer) {
     this.dto = dto;
+    this.answer = answer;
   }
 
   @Nullable
@@ -34,10 +36,21 @@ public class TicketDetailFragment extends Fragment {
     TextView writer = view.findViewById(R.id.ticketWriterDetail);
     TextView writedate = view.findViewById(R.id.ticketWritedateDetail);
 
+    TextView answerTitle = view.findViewById(R.id.answerTitleDetail);
+    TextView answerContent = view.findViewById(R.id.answerContentDetail);
+    TextView answerWriter = view.findViewById(R.id.answerWriterDetail);
+    TextView answerWritedate = view.findViewById(R.id.answerWritedateDetail);
+
     title.setText(dto.getTitle());
     content.setText(dto.getContent());
     writer.setText(dto.getWriter());
     writedate.setText(dto.getWritedate());
+    if(answer != null) {
+      answerTitle.setText(answer.getTitle());
+      answerContent.setText(answer.getContent());
+      answerWriter.setText(answer.getWriter());
+      answerWritedate.setText(answer.getWritedate());
+    }
 
   }
 }

@@ -303,8 +303,8 @@
                         <option name="values">
                           <map>
                             <entry key="assetSourceType" value="FILE" />
-                            <entry key="outputName" value="ic_logo" />
-                            <entry key="sourceFile" value="C:\Users\SEC\Downloads\logo.svg" />
+                            <entry key="outputName" value="ic_question_solid" />
+                            <entry key="sourceFile" value="C:\Users\SEC\Downloads\question-solid.svg" />
                           </map>
                         </option>
                       </PersistentState>
