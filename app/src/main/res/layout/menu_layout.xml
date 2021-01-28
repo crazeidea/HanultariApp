@@ -20,14 +20,26 @@
         android:fontFamily="@font/robotobold"
         android:lineHeight="34dp"
         android:paddingTop="8dp"
-        android:text="00000에\n주차되어있어요."
+        android:text="새로운 주차의 발견"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         android:textColor="#ffffff"
-        android:textSize="32dp"
+        android:textSize="24sp"
 
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageView8"
+        android:layout_width="91dp"
+        android:layout_height="45dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvParkingInfo"
+        app:srcCompat="@drawable/ic_logo_white"
+        android:src="@drawable/ic_logo_white"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

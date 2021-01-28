@@ -2,7 +2,9 @@ package com.hanultari.parking;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.Service;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.PointF;
@@ -103,6 +105,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
   public Marker placeMarker;
   public InfoWindow symbolInfo;
 
+  private NavigationView navigationView;
+
 
   @SuppressLint("ClickableViewAccessibility")
   @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -121,7 +125,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
     /*레이아웃 관련 변수 */
     DrawerLayout mainDrawerLayout = findViewById(R.id.mainDrawerLayout);
-    NavigationView navigationView = findViewById(R.id.mainNavigationView);
+    navigationView = findViewById(R.id.mainNavigationView);
 
     /* 네이버 지도 Fragment 실행 */
     FragmentManager fm = getSupportFragmentManager();
@@ -151,9 +155,11 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
     currentLatLng = new LatLng(location.getLatitude(), location.getLongitude());
 
+    showMenu();
+
     /* 상단 Toolbar */
-    ImageView menu = findViewById(R.id.mainMenuImage);
-    menu.setOnClickListener(new View.OnClickListener() {
+    ImageView menuButton = findViewById(R.id.mainMenuImage);
+    menuButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
         mainDrawerLayout.openDrawer(Gravity.LEFT);
@@ -178,6 +184,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
       }
     });
 
+
+
     /* Navigation Drawer에 Listener 부착 */
     navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
       @Override
@@ -189,19 +197,38 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             break;
           case R.id.navLogin:
             startActivity(new Intent(MainActivity.this, LoginActivity.class));
+            finish();
             break;
           case R.id.navFavorite:
             startActivity(new Intent(MainActivity.this, FavoriteActivity.class));
             break;
           case R.id.navSignup:
             startActivity(new Intent(MainActivity.this, SignupActivity.class));
+            finish();
             break;
           case R.id.navNotice:
             startActivity(new Intent(MainActivity.this, NoticeActivity.class));
             break;
           case R.id.navTicket:
             startActivity(new Intent(MainActivity.this, TicketActivity.class));
-          //TODO
+            break;
+          case R.id.navLogout:
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+            builder.setMessage("정말 로그아웃하시겠습니까?");
+            builder.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+              @Override
+              public void onClick(DialogInterface dialog, int which) {
+                loginDTO = null;
+                showMenu();
+              }
+            });
+            builder.setNegativeButton("취소", new DialogInterface.OnClickListener() {
+              @Override
+              public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+              }
+            });
+            builder.show();
         }
         return true;
       }
@@ -554,28 +581,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         });
       }
     }
-
-    /* 지도 심볼 클릭 이벤트 */
-    symbolInfo = new InfoWindow();
-    naverMap.setOnSymbolClickListener(symbol -> {
-      symbolInfo.close();
-      ViewGroup rootView = findViewById(R.id.mainmap);
-      symbolInfo.setAdapter(new PlaceInfoWindowAdapter(this, rootView, "", symbol.getCaption()));
-      symbolInfo.setPosition(symbol.getPosition());
-      symbolInfo.open(naverMap);
-      CameraPosition currentCamera = naverMap.getCameraPosition();
-      CameraPosition symbolCamera = new CameraPosition(symbol.getPosition(), currentCamera.zoom);
-      CameraUpdate cameraUpdate = CameraUpdate.toCameraPosition(symbolCamera).animate(CameraAnimation.Easing);
-      naverMap.moveCamera(cameraUpdate);
-      symbolInfo.setOnClickListener(new Overlay.OnClickListener() {
-        @Override
-        public boolean onClick(@NonNull Overlay overlay) {
-
-          return false;
-        }
-      });
-      return true;
-    });
+    
 
   }// onMapReady()
 
@@ -620,19 +626,18 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     super.onRequestPermissionsResult(requestCode, permissions, grantResults);
   }
 
-
-  @Override
-  public boolean onPrepareOptionsMenu(Menu menu) {
-    if (loginDTO == null) {
-      menu.findItem(R.id.navLogout).setVisible(false);
-    } else {
-      menu.findItem(R.id.navLogin).setVisible(false);
+  public void showMenu() {
+    Menu menu = navigationView.getMenu();
+    if(loginDTO != null) { // 로그인 시
       menu.findItem(R.id.navSignup).setVisible(false);
+      menu.findItem(R.id.navLogin).setVisible(false);
+      menu.findItem(R.id.navLogout).setVisible(true);
+    } else { // 미로그인
+      menu.findItem(R.id.navSignup).setVisible(true);
+      menu.findItem(R.id.navLogin).setVisible(true);
+      menu.findItem(R.id.navLogout).setVisible(false);
     }
-    super.onPrepareOptionsMenu(menu);
-    return true;
   }
-
 
 }
 

@@ -31,11 +31,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.hanultari.parking.AsyncTasks.DeleteFavorite;
 import com.hanultari.parking.AsyncTasks.InsertFavorite;
+import com.hanultari.parking.AsyncTasks.InsertReview;
 import com.hanultari.parking.AsyncTasks.SelectParking;
 import com.hanultari.parking.AsyncTasks.CheckFavorite;
 import com.hanultari.parking.AsyncTasks.SelectReview;
 import com.hanultari.parking.AsyncTasks.SelectUser;
 import com.hanultari.parking.Custom.CustomScrollView;
+import com.hanultari.parking.Custom.ReviewDialog;
 import com.hanultari.parking.DTO.ReviewDTO;
 import com.hanultari.parking.R;
 import com.naver.maps.geometry.LatLng;
@@ -57,6 +59,9 @@ public class DetailActivity extends AppCompatActivity{
   LatLng latLng;
   Boolean isFavorite;
   private Menu menu;
+  private int parkingid;
+
+  private LinearLayout reviewLinear;
 
   List<TextView> seatViewList = new ArrayList<>();
   int seatWidth = 100;
@@ -70,7 +75,7 @@ public class DetailActivity extends AppCompatActivity{
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_detail);
 
-    int parkingid = getIntent().getIntExtra("id", 0);
+    parkingid = getIntent().getIntExtra("id", 0);
 
     /* 레이아웃 관련 변수 */
     CustomScrollView scrollView = findViewById(R.id.detailScrollView);
@@ -89,7 +94,8 @@ public class DetailActivity extends AppCompatActivity{
     WebView pano = findViewById(R.id.detailPanorama);
     TextView label = findViewById(R.id.detailLabel);
     LinearLayout badges = findViewById(R.id.detailLabels);
-    LinearLayout reviewLinear = findViewById(R.id.linearReviews);
+    reviewLinear = findViewById(R.id.linearReviews);
+    Button btnReview = findViewById(R.id.btnReviewDetail);
 
 
     Intent intent = getIntent();
@@ -121,15 +127,7 @@ public class DetailActivity extends AppCompatActivity{
     ArrayList<ReviewDTO> array = new ArrayList<>();
     try {
       JSONObject parking = selectParking.execute(parkingid).get();
-      JSONArray reviews = selectReview.execute(parkingid).get();
-      for (int i = 0; i < reviews.length(); i++) {
-        JSONObject review = (JSONObject) reviews.get(i);
-        ReviewDTO dto = new ReviewDTO();
-        dto.setMember_id(review.getInt("member_id"));
-        dto.setRating(review.getInt("rating"));
-        dto.setContent(review.getString("content"));
-        array.add(dto);
-      }
+
       Log.d(TAG, "onCreate: " + array.size());
       name.setText(parking.getString("name"));
       status.setText("현재 " + (parking.getInt("total") - parking.getInt("parked")) + "자리 남아있어요.");
@@ -177,47 +175,8 @@ public class DetailActivity extends AppCompatActivity{
         badges.addView(machineText);
       }
 
-      if(array.size() > 0) {
-        for (int i = 0; i < array.size(); i++) {
-          if (i < 2) {
-            LinearLayout review = new LinearLayout(this);
-            review.setOrientation(LinearLayout.HORIZONTAL);
-            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);
-            layoutParams.setMargins(0, 0, 8, 0);
-            TextView nickname = new TextView(this);
-            nickname.setLayoutParams(layoutParams);
-            nickname.setTextColor(getResources().getColor(R.color.black));
-            try {
-              SelectUser su = new SelectUser();
-              JSONObject object = su.execute(array.get(i).getMember_id()).get();
-              nickname.setText(object.getString("nickname"));
-            } catch (Exception e) {
-              e.printStackTrace();
-            }
-            TextView rating = new TextView(this);
-            rating.setText("★" + String.valueOf(array.get(i).getRating()));
-            rating.setLayoutParams(layoutParams);
-            rating.setTextColor(getResources().getColor(R.color.yellow));
-            TextView content = new TextView(this);
-            content.setText(array.get(i).getContent());
-            content.setLayoutParams(layoutParams);
-            content.setTextColor(getResources().getColor(R.color.black));
+      getReview();
 
-            review.addView(nickname);
-            review.addView(rating);
-            review.addView(content);
-            reviewLinear.addView(review);
-          }
-        }
-      } else {
-        TextView message = new TextView(this);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        message.setLayoutParams(layoutParams);
-        message.setText("등록된 이용 후기가 없습니다.");
-        message.setTextColor(getResources().getColor(R.color.black));
-        message.setTextSize(16);
-        reviewLinear.addView(message);
-      }
 
       Uri callnumber = Uri.parse("tel:" + number);
       call.setOnClickListener(new View.OnClickListener() {
@@ -309,6 +268,43 @@ public class DetailActivity extends AppCompatActivity{
           } catch (Exception e) {
             e.printStackTrace();
           }
+        }
+      });
+
+      if(loginDTO != null) btnReview.setVisibility(View.VISIBLE);
+      btnReview.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+          ReviewDialog reviewDialog = new ReviewDialog(DetailActivity.this);
+          reviewDialog.show();
+          Button submit = reviewDialog.positiveButton;
+          submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+              if (reviewDialog.rating > 0 && !reviewDialog.textContent.getText().toString().equals("")) {
+                ReviewDTO dto = new ReviewDTO();
+                dto.setParking_id(parkingid);
+                dto.setMember_id(loginDTO.getId());
+                dto.setRating(reviewDialog.rating);
+                dto.setContent(reviewDialog.textContent.getText().toString());
+                InsertReview ir = new InsertReview();
+                ir.execute(dto);
+                reviewDialog.dismiss();
+                getReview();
+              } else {
+                Toast.makeText(DetailActivity.this, "평점과 후기를 입력해주세요.", Toast.LENGTH_SHORT).show();
+              }
+            }
+          });
+          Button cancel = reviewDialog.negativeButton;
+          cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+              reviewDialog.dismiss();
+              getReview();
+            }
+          });
+
         }
       });
 
@@ -455,4 +451,66 @@ public class DetailActivity extends AppCompatActivity{
     });
 
   } // onCreate
+
+  public void getReview() {
+    SelectReview selectReview = new SelectReview();
+    ArrayList<ReviewDTO> array = new ArrayList<>();
+    try {
+      JSONArray reviews = selectReview.execute(parkingid).get();
+      for (int i = 0; i < reviews.length(); i++) {
+        JSONObject review = (JSONObject) reviews.get(i);
+        ReviewDTO dto = new ReviewDTO();
+        dto.setMember_id(review.getInt("member_id"));
+        dto.setRating(review.getInt("rating"));
+        dto.setContent(review.getString("content"));
+        array.add(dto);
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    reviewLinear.removeAllViews();
+
+    if(array.size() > 0) {
+      for (int i = 0; i < array.size(); i++) {
+        if (i < 2) {
+          LinearLayout review = new LinearLayout(this);
+          review.setOrientation(LinearLayout.HORIZONTAL);
+          LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.MATCH_PARENT);
+          layoutParams.setMargins(0, 0, 8, 0);
+          TextView nickname = new TextView(this);
+          nickname.setLayoutParams(layoutParams);
+          nickname.setTextColor(getResources().getColor(R.color.black));
+          try {
+            SelectUser su = new SelectUser();
+            JSONObject object = su.execute(array.get(i).getMember_id()).get();
+            nickname.setText(object.getString("nickname"));
+          } catch (Exception e) {
+            e.printStackTrace();
+          }
+          TextView rating = new TextView(this);
+          rating.setText("★" + array.get(i).getRating());
+          rating.setLayoutParams(layoutParams);
+          rating.setTextColor(getResources().getColor(R.color.yellow));
+          TextView content = new TextView(this);
+          content.setText(array.get(i).getContent());
+          content.setLayoutParams(layoutParams);
+          content.setTextColor(getResources().getColor(R.color.black));
+
+          review.addView(nickname);
+          review.addView(rating);
+          review.addView(content);
+          reviewLinear.addView(review);
+        }
+      }
+    } else {
+      TextView message = new TextView(this);
+      LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+      message.setLayoutParams(layoutParams);
+      message.setText("등록된 이용 후기가 없습니다.");
+      message.setTextColor(getResources().getColor(R.color.black));
+      message.setTextSize(16);
+      reviewLinear.addView(message);
+    }
+
+  }
 }

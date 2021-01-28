@@ -349,11 +349,24 @@
                 android:textColor="@color/black"
                 android:textSize="20sp" />
 
-            <LinearLayout
-                android:id="@+id/linearReviews"
+            <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"></LinearLayout>
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:id="@+id/linearReviews"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" />
+            </ScrollView>
+
+            <Button
+                android:id="@+id/btnReviewDetail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/robotobold"
+                android:text="후기 작성"
+                android:visibility="gone" />
 
             <Space
                 android:layout_width="match_parent"

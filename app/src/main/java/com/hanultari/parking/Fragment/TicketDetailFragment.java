@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -41,6 +42,8 @@ public class TicketDetailFragment extends Fragment {
     TextView answerWriter = view.findViewById(R.id.answerWriterDetail);
     TextView answerWritedate = view.findViewById(R.id.answerWritedateDetail);
 
+    LinearLayout answerLinear = view.findViewById(R.id.answerLinearLayout);
+
     title.setText(dto.getTitle());
     content.setText(dto.getContent());
     writer.setText(dto.getWriter());
@@ -50,6 +53,8 @@ public class TicketDetailFragment extends Fragment {
       answerContent.setText(answer.getContent());
       answerWriter.setText(answer.getWriter());
       answerWritedate.setText(answer.getWritedate());
+    } else {
+      answerLinear.setVisibility(View.GONE);
     }
 
   }

@@ -51,55 +51,62 @@
             android:layout_width="match_parent"
             android:layout_height="30dp" />
 
-        <TextView
-            android:id="@+id/textView20"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="답변"
-            android:textColor="@color/black"
-            android:fontFamily="@font/robotobold"
-            android:textSize="24sp"
-            android:layout_marginBottom="8dp"
-            />
-
-        <TextView
-            android:id="@+id/answerTitleDetail"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:fontFamily="@font/robotobold"
-            android:text="TextView"
-            android:textColor="@color/black"
-            android:textSize="24sp" />
-
-        <TextView
-            android:id="@+id/answerWriterDetail"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="TextView" />
-
-        <TextView
-            android:id="@+id/answerWritedateDetail"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="TextView" />
-
-        <View
-            android:id="@+id/divider3"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            android:background="?android:attr/listDivider" />
-
-        <TextView
-            android:id="@+id/answerContentDetail"
+        <LinearLayout
+            android:id="@+id/answerLinearLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:fontFamily="@font/robotoregular"
-            android:text="asd"
-            android:textColor="@color/text_black"
-            android:textSize="24dp" />
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textAnswerTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:fontFamily="@font/robotobold"
+                android:text="답변"
+                android:textColor="@color/black"
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/answerTitleDetail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:fontFamily="@font/robotobold"
+                android:text="TextView"
+                android:textColor="@color/black"
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/answerWritedateDetail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="TextView" />
+
+            <TextView
+                android:id="@+id/answerWriterDetail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="TextView" />
+
+            <View
+                android:id="@+id/answerDivider"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:background="?android:attr/listDivider" />
+
+            <TextView
+                android:id="@+id/answerContentDetail"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fontFamily="@font/robotoregular"
+                android:text="asd"
+                android:textColor="@color/text_black"
+                android:textSize="24dp" />
+
+        </LinearLayout>
 
     </LinearLayout>
 

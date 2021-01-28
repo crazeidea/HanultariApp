@@ -1,8 +1,9 @@
 package com.hanultari.parking.AsyncTasks;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
-import com.hanultari.parking.DTO.TicketDTO;
+import com.hanultari.parking.DTO.ReviewDTO;
 
 import org.json.JSONArray;
 
@@ -12,21 +13,23 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
 
 import static com.hanultari.parking.CommonMethod.ipConfig;
-import static com.hanultari.parking.CommonMethod.loginDTO;
 
-public class SelectTicket extends AsyncTask<Void, Void, JSONArray> {
+public class InsertReview extends AsyncTask<ReviewDTO, Void, Boolean> {
+  private static final String TAG = "SelectFavorite";
 
-  JSONArray array;
+  Boolean result;
 
   @Override
-  protected JSONArray doInBackground(Void... voids) {
+  protected Boolean doInBackground(ReviewDTO... reviewDTOS) {
+    ReviewDTO dto = reviewDTOS[0];
+    int memberid = dto.getMember_id();
+    int parkingid = dto.getParking_id();
+    int rating = dto.getRating();
+    String content = dto.getContent();
     try {
-      String writer = loginDTO.getName();
-      String postURL = String.format("%s/getTicket?writer=%s", ipConfig, writer);
-
+      String postURL = String.format("%s/reviewAndroid?member_id=%s&parking_id=%s&rating=%s&content=%s", ipConfig, memberid, parkingid,rating, content);
       URL url = new URL(postURL);
       HttpURLConnection conn = (HttpURLConnection) url.openConnection();
       InputStream is = new BufferedInputStream(conn.getInputStream());
@@ -34,17 +37,17 @@ public class SelectTicket extends AsyncTask<Void, Void, JSONArray> {
       StringBuffer builder = new StringBuffer();
 
       String inputString = null;
-      while ((inputString = br.readLine()) != null ) {
+      while((inputString = br.readLine()) != null) {
         builder.append(inputString);
       }
 
-      String result = builder.toString();
-      array = new JSONArray(result);
+      String resultString = builder.toString();
+      result = Boolean.valueOf(resultString);
       br.close();
       is.close();
-    } catch (Exception e){
+    } catch (Exception e) {
       e.printStackTrace();
     }
-    return array;
+    return result;
   }
 }

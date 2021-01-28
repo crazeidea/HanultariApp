@@ -1,6 +1,7 @@
 package com.hanultari.parking.Fragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +27,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 public class TicketListFragment extends Fragment {
-
+  private static final String TAG = "TicketListFragment";
   ArrayList<TicketDTO> dtos = new ArrayList<>();
   ArrayList<TicketDTO> answers = new ArrayList<>();
 
@@ -44,6 +45,7 @@ public class TicketListFragment extends Fragment {
         SelectTicketAnswer sta = new SelectTicketAnswer();
         JSONArray array = st.execute().get();
         for (int i = 0; i < array.length(); i++) {
+          Log.d(TAG, "onViewCreated: " + array.length());
           JSONObject object = (JSONObject) array.get(i);
           TicketDTO dto = new TicketDTO();
           dto.setTitle(object.getString("title"));
@@ -52,13 +54,18 @@ public class TicketListFragment extends Fragment {
           dto.setWritedate(new SimpleDateFormat().format(object.getLong("writedate")));
           dto.setStatus(object.getInt("status"));
           dtos.add(dto);
-          JSONObject answerObject = sta.execute(object.getInt("id")).get();
-          TicketDTO answer = new TicketDTO();
-          answer.setTitle(answerObject.getString("title"));
-          answer.setContent(answerObject.getString("content"));
-          answer.setWriter(answerObject.getString("writer"));
-          answer.setWritedate(new SimpleDateFormat().format(object.getLong("writedate")));
-          answers.add(answer);
+          if(object.getInt("status") == 1) {
+            JSONObject answerObject = sta.execute(object.getInt("id")).get();
+            TicketDTO answer = new TicketDTO();
+            answer.setTitle(answerObject.getString("title"));
+            answer.setContent(answerObject.getString("content"));
+            answer.setWriter(answerObject.getString("writer"));
+            answer.setWritedate(new SimpleDateFormat().format(object.getLong("writedate")));
+            answers.add(answer);
+          } else {
+            TicketDTO blank = new TicketDTO();
+            answers.add(blank);
+          }
         }
       } catch (Exception e) {
         e.printStackTrace();
